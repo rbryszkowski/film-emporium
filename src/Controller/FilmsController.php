@@ -5,18 +5,19 @@ namespace App\Controller;
 use App\Entity\Film;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class FilmsController extends AbstractController
 {
 
-    public function addFilm(): Response
+    public function addFilm(Request $request): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $title = $_POST['title'];
-        $genre = $_POST['genre'];
-        $description = $_POST['description'];
+        $title = $request->get('title');
+        $genre = $request->get('genre');
+        $description = $request->get('description');
 
         $film = new Film();
         $film->setTitle($title);
