@@ -33,14 +33,14 @@ class FilmsController extends AbstractController
         return $this->json($film);
     }
 
-    public function updateFilm(int $id): Response
+    public function updateFilm(int $id, Request $request): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
 
         $film = $entityManager->getRepository(Film::class)->find($id);
-        $title = $_POST['newTitle'];
-        $genre = $_POST['newGenre'];
-        $description = $_POST['newDescription'];
+        $title = $request->get('newTitle');
+        $genre = $request->get('newGenre');
+        $description = $request->get('newDescription');
 
         $film->setTitle($title);
         $film->setGenre($genre);
