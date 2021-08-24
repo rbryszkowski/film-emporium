@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <title>Film Database</title>
+  </head>
+
+  <body>
+    <div id="body-wrapper">
+        <h3>Search film collection</h3>
+        <br><br>
+        <div class="form" id="film-search">
+          <div class="form-field">
+            <label for="select_search_param">Search by:</label>
+            <select id="select_search_param" name="select_search_param">
+              <option value="film_id">ID</option>
+              <option value="title">Title</option>
+              <option value="genre">Genre</option>
+            </select>
+            &nbsp;
+            <input id="film_search_input">
+            &nbsp;
+            <button id="film_search_btn">Submit</button>
+          </div>
+          <br>
+          <div class="form-buttons">
+            <button id="show_all_btn">Show all entries</button>
+          </div>
+        </div>
+        <br><br>
+        <h3>Add film to collection</h3>
+        <br><br>
+        <div id="add-film" class="form">
+          <div class="form-field">
+            <label for="film_title">Title:</label>
+            <input id="film_title">
+          </div>
+          <br>
+          <div class='form-field'>
+            <label for="film_genre">Genre:</label>
+            <input id="film_genre">
+          </div>
+          <br>
+          <div class='form-field'>
+            <label for="film_desc">Description:</label>
+            <input id="film_desc">
+          </div>
+          <br>
+          <div class="form-buttons">
+            <button id="clear_btn">Clear</button>
+            <button id="add_film_btn">Add</button>
+            <span id="add_film_feedback"></span>
+          </div>
+        </div>
+        <br><br>
+      <div id="results">
+        <h3>Results</h3>
+        <br><br>
+        <table id="results_table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Genre</th>
+              <th>Description</th>
+              <th colspan="2" id="actions_col">Actions</th>
+           </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <br>
+        <span id="edit_table_feedback"></span>
+        <br><br>
+      </div>
+    </div>
+    <script src="../js/helper.js"></script>
+    <script src="../js/script.js"></script>
+  </body>
+</html>

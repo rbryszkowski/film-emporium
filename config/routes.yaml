@@ -1,0 +1,34 @@
+
+#User interface - returns html
+
+homepage:
+   path: /
+   controller: App\Controller\HomepageController::homepage
+
+# film database actions - returns json response
+
+addFilm:
+   path: /films/add
+   controller: App\Controller\FilmsController::addFilm
+   methods: POST
+
+updateFilm:
+   path: /films/update/{id}
+   controller: App\Controller\FilmsController::updateFilm
+   methods: POST
+
+deleteFilm:
+  path: /films/delete/{id}
+  controller: App\Controller\FilmsController::deleteFilm
+  methods: POST
+
+findMatchingFilm:
+   path: /films/{searchBy}/{input}
+   controller: App\Controller\FilmsController::findMatching
+   methods: GET
+
+
+showAllFilms:
+   path: /films/all
+   controller: App\Controller\FilmsController::showAll
+   methods: GET
