@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\FilmRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\ManyToMany;
 
 /**
  * @ORM\Entity(repositoryClass=FilmRepository::class)
@@ -23,9 +24,29 @@ class Film
     private $title;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\ManyToMany(targetEntity="Genre", inversedBy="films")
      */
-    private $genre;
+    private $genres;
+
+    /**
+     * Many films have one director. This is the owning side.
+     * @ORM\ManyToOne(targetEntity="Director", inversedBy="films")
+     */
+    private $director;
+
+    public function getDirector(): ?Director
+    {
+        return $this->director;
+    }
+
+    public function setDirector(?Director $director): self
+    {
+        $this->director = $director;
+
+        return $this;
+    }
+
+
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -45,18 +66,6 @@ class Film
     public function setTitle(string $title): self
     {
         $this->title = $title;
-
-        return $this;
-    }
-
-    public function getGenre(): ?string
-    {
-        return $this->genre;
-    }
-
-    public function setGenre(string $genre): self
-    {
-        $this->genre = $genre;
 
         return $this;
     }
