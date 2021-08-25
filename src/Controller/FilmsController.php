@@ -2,44 +2,75 @@
 
 namespace App\Controller;
 
+use App\Entity\Director;
 use App\Entity\Film;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class FilmsController extends AbstractController
 {
 
-    public function addFilm(): Response
+
+    public function addFilm(Request $request): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
-        $title = $_POST['title'];
-        $genre = $_POST['genre'];
-        $description = $_POST['description'];
+
+        //get title, desc., and director from request
+        $title = $request->get('title');
+        $description = $request->get('description');
+        $director_name = $request->get('director');
+
+        //create new director object
+        $director = new Director();
+        $director->setName($director_name);
 
         $film = new Film();
         $film->setTitle($title);
-        $film->setGenre($genre);
         $film->setDescription($description);
+        //relates this film to the director
+        $film->setDirector($director);
 
-        // tell Doctrine you want to (eventually) save the Product (no queries yet)
+        $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($film);
-
-        // actually executes the queries (i.e. the INSERT query)
+        $entityManager->persist($director);
         $entityManager->flush();
 
         return $this->json($film);
+
     }
 
-    public function updateFilm(int $id): Response
+    public function findMatching(string $searchBy='title', string $input): Response
+    {
+
+        if ($searchBy === 'film_id') {$searchBy = 'id';}
+
+        $results = $this->getDoctrine()->getRepository(Film::class)->findBy([$searchBy => $input]);
+
+        return $this->json($results);
+
+    }
+
+    public function showAll(): Response
+    {
+
+        $results = $this->getDoctrine()->getRepository(Film::class)->findAll();
+
+        return $this->json($results);
+
+    }
+
+    ////////
+
+    public function updateFilm(int $id, Request $request): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
 
         $film = $entityManager->getRepository(Film::class)->find($id);
-        $title = $_POST['newTitle'];
-        $genre = $_POST['newGenre'];
-        $description = $_POST['newDescription'];
+        $title = $request->get('newTitle');
+        $genre = $request->get('newGenre');
+        $description = $request->get('newDescription');
 
         $film->setTitle($title);
         $film->setGenre($genre);
@@ -64,28 +95,6 @@ class FilmsController extends AbstractController
         $entityManager->flush();
 
         return $this->json($film);
-
-    }
-
-    public function findMatching(string $searchBy='title', string $input): Response
-    {
-
-        if ($searchBy === 'film_id') {$searchBy = 'id';}
-
-        $results = $this->getDoctrine()->getRepository(Film::class)->findBy([$searchBy => $input]);
-
-        // $results = $this->getDoctrine()->getRepository(Film::class)->findAllLike($searchBy, $input);
-
-        return $this->json($results);
-
-    }
-
-    public function showAll(): Response
-    {
-
-        $results = $this->getDoctrine()->getRepository(Film::class)->findAll();
-
-        return $this->json($results);
 
     }
 

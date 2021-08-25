@@ -92,7 +92,7 @@
 
       data: {
         title: $('#film_title').val(),
-        genre: $('#film_genre').val(),
+        director: $('#film_director').val(),
         description: $('#film_desc').val()
       },
 
