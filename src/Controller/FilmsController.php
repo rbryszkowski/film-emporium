@@ -22,13 +22,9 @@ class FilmsController extends AbstractController
 
         $form = $this->createForm(FilmType::class, $filmModel);
 
-        $errors = '';
-
         if ($request->isMethod('POST')) {
 
             $form->handleRequest($request);
-
-            $errors = $validator->validate($filmModel);
 
             if ($form->isSubmitted() && $form->isValid()) {
                 $manager = $this->getDoctrine()->getManager();
@@ -43,8 +39,7 @@ class FilmsController extends AbstractController
 
         return $this->render('films/index.html.twig', [
             'form' => $form->createView(),
-            'films' => $films,
-            'errors' => $errors
+            'films' => $films
         ]);
 
     }

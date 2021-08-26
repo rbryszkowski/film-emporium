@@ -54,6 +54,8 @@ class Film
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(max=200)
+     * @Assert\Regex(pattern="/[A-Za-z]+/")
      */
     private $description;
 
