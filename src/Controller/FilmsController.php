@@ -30,9 +30,11 @@ class FilmsController extends AbstractController
 
             $errors = $validator->validate($filmModel);
 
-            $manager = $this->getDoctrine()->getManager();
-            $manager->persist($filmModel);
-            $manager->flush();
+            if ($form->isSubmitted() && $form->isValid()) {
+                $manager = $this->getDoctrine()->getManager();
+                $manager->persist($filmModel);
+                $manager->flush();
+            }
 
         }
 
