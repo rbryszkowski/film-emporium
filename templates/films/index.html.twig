@@ -1,11 +1,18 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-{{ form(form) }}
+
+    <h3>Add Film:</h3>
+
+    {{ form(form) }}
+
+    <br/>
+
+    {{  errors }}
 
     <hr/>
 
-    <h1>Films</h1>
+    <h3>Films:</h3>
     {% for film in films  %}
         <div>
             <p>Title: {{ film.title }}</p>

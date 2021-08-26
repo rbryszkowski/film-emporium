@@ -12,20 +12,28 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class FilmsController extends AbstractController
 {
-    public function index(Request $request) : Response
+    public function index(Request $request, ValidatorInterface $validator) : Response
     {
         $filmModel = new Film();
+
         $form = $this->createForm(FilmType::class, $filmModel);
 
+        $errors = '';
+
         if ($request->isMethod('POST')) {
+
             $form->handleRequest($request);
+
+            $errors = $validator->validate($filmModel);
 
             $manager = $this->getDoctrine()->getManager();
             $manager->persist($filmModel);
             $manager->flush();
+
         }
 
         // all our results currently
@@ -33,8 +41,10 @@ class FilmsController extends AbstractController
 
         return $this->render('films/index.html.twig', [
             'form' => $form->createView(),
-            'films' => $films
+            'films' => $films,
+            'errors' => $errors
         ]);
+
     }
 
     public function addFilm(Request $request): Response
@@ -99,7 +109,7 @@ class FilmsController extends AbstractController
         $film->setGenre($genre);
         $film->setDescription($description);
 
-        // $entityManager->persist($film);
+        $entityManager->persist($film);
         $entityManager->flush();
 
         return $this->json($film);
