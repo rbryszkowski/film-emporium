@@ -7,6 +7,15 @@
 
     <h1>Films</h1>
     {% for film in films  %}
-        <h3>{{ film.title }} - {{  film.description }}</h3>
+        <div>
+            <p>Title: {{ film.title }}</p>
+            <p>Description: {{ film.description }}</p>
+            <p>Director: {{ film.director ? film.director.name : '(No Director)' }}</p>
+            <p>Genres:</p>
+            {% for genre in film.genres %}
+                <li>{{ genre.name }}</li>
+            {% endfor %}
+        </div>
+        <hr/>
     {% endfor %}
 {% endblock %}

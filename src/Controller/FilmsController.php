@@ -17,10 +17,6 @@ class FilmsController extends AbstractController
 {
     public function index(Request $request) : Response
     {
-        /** @var array<Genre> $genres */
-        $genres = $this->getDoctrine()->getRepository(Genre::class)->findAll();
-
-
         $filmModel = new Film();
         $form = $this->createForm(FilmType::class, $filmModel);
 
