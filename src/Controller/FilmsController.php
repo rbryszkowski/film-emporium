@@ -5,14 +5,41 @@ namespace App\Controller;
 use App\Entity\Director;
 use App\Entity\Film;
 
+use App\Entity\Genre;
+use App\Form\FilmType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Routing\Annotation\Route;
 
 class FilmsController extends AbstractController
 {
+    public function index(Request $request) : Response
+    {
+        /** @var array<Genre> $genres */
+        $genres = $this->getDoctrine()->getRepository(Genre::class)->findAll();
 
+
+        $filmModel = new Film();
+        $form = $this->createForm(FilmType::class, $filmModel);
+
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+
+            $manager = $this->getDoctrine()->getManager();
+            $manager->persist($filmModel);
+            $manager->flush();
+        }
+
+        // all our results currently
+        $films = $this->getDoctrine()->getRepository(Film::class)->findAll();
+
+        return $this->render('films/index.html.twig', [
+            'form' => $form->createView(),
+            'films' => $films
+        ]);
+    }
 
     public function addFilm(Request $request): Response
     {

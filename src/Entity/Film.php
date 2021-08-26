@@ -81,4 +81,25 @@ class Film
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getGenres()
+    {
+        return $this->genres;
+    }
+
+    /**
+     * @param mixed $genres
+     *
+     * @return Film
+     */
+    public function setGenres($genres)
+    {
+        $this->genres = $genres;
+        return $this;
+    }
+
+
 }

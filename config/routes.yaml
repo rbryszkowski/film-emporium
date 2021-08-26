@@ -1,12 +1,11 @@
 
 #User interface - returns html
 
-homepage:
+indexFilm:
    path: /
-   controller: App\Controller\HomepageController::homepage
+   controller: App\Controller\FilmsController::index
 
 # film database actions - returns json response
-
 addFilm:
    path: /films/add
    controller: App\Controller\FilmsController::addFilm

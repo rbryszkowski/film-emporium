@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+{{ form(form) }}
+
+    <hr/>
+
+    <h1>Films</h1>
+    {% for film in films  %}
+        <h3>{{ film.title }} - {{  film.description }}</h3>
+    {% endfor %}
+{% endblock %}
