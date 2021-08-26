@@ -107,18 +107,14 @@ class FilmsController extends AbstractController
 
     public function deleteFilm(int $id): Response
     {
-
         $entityManager = $this->getDoctrine()->getManager();
 
         $film = $entityManager->getRepository(Film::class)->find($id);
 
         $entityManager->remove($film);
-
-        // $entityManager->persist($film);
         $entityManager->flush();
 
-        return $this->json($film);
-
+        return $this->redirectToRoute('indexFilm');
     }
 
 }

@@ -15,6 +15,7 @@
             {% for genre in film.genres %}
                 <li>{{ genre.name }}</li>
             {% endfor %}
+            <a href="/films/delete/{{ film.id }}">Delete</a>
         </div>
         <hr/>
     {% endfor %}

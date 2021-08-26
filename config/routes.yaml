@@ -19,7 +19,7 @@ updateFilm:
 deleteFilm:
   path: /films/delete/{id}
   controller: App\Controller\FilmsController::deleteFilm
-  methods: POST
+  methods: GET
 
 findMatchingFilm:
    path: /films/{searchBy}/{input}
