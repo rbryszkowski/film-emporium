@@ -5,14 +5,44 @@ namespace App\Controller;
 use App\Entity\Director;
 use App\Entity\Film;
 
+use App\Entity\Genre;
+use App\Form\FilmType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class FilmsController extends AbstractController
 {
+    public function index(Request $request, ValidatorInterface $validator) : Response
+    {
+        $filmModel = new Film();
 
+        $form = $this->createForm(FilmType::class, $filmModel);
+
+        if ($request->isMethod('POST')) {
+
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $manager = $this->getDoctrine()->getManager();
+                $manager->persist($filmModel);
+                $manager->flush();
+            }
+
+        }
+
+        // all our results currently
+        $films = $this->getDoctrine()->getRepository(Film::class)->findAll();
+
+        return $this->render('films/index.html.twig', [
+            'form' => $form->createView(),
+            'films' => $films
+        ]);
+
+    }
 
     public function addFilm(Request $request): Response
     {
@@ -76,7 +106,7 @@ class FilmsController extends AbstractController
         $film->setGenre($genre);
         $film->setDescription($description);
 
-        // $entityManager->persist($film);
+        $entityManager->persist($film);
         $entityManager->flush();
 
         return $this->json($film);
@@ -84,18 +114,14 @@ class FilmsController extends AbstractController
 
     public function deleteFilm(int $id): Response
     {
-
         $entityManager = $this->getDoctrine()->getManager();
 
         $film = $entityManager->getRepository(Film::class)->find($id);
 
         $entityManager->remove($film);
-
-        // $entityManager->persist($film);
         $entityManager->flush();
 
-        return $this->json($film);
-
+        return $this->redirectToRoute('indexFilm');
     }
 
 }

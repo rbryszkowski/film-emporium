@@ -5,9 +5,12 @@ namespace App\Entity;
 use App\Repository\FilmRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ManyToMany;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=FilmRepository::class)
+ * @UniqueEntity("title")
  */
 class Film
 {
@@ -19,7 +22,8 @@ class Film
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=50, unique=true)
+     * @Assert\NotBlank
      */
     private $title;
 
@@ -50,6 +54,8 @@ class Film
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(max=200)
+     * @Assert\Regex(pattern="/[A-Za-z]+/")
      */
     private $description;
 
@@ -81,4 +87,25 @@ class Film
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getGenres()
+    {
+        return $this->genres;
+    }
+
+    /**
+     * @param mixed $genres
+     *
+     * @return Film
+     */
+    public function setGenres($genres)
+    {
+        $this->genres = $genres;
+        return $this;
+    }
+
+
 }

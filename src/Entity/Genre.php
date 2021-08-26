@@ -4,9 +4,12 @@ namespace App\Entity;
 
 use App\Repository\GenreRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=GenreRepository::class)
+ * @UniqueEntity("name")
  */
 class Genre
 {
@@ -18,7 +21,10 @@ class Genre
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=50, unique=true)
+     * @Assert\NotBlank
+     * @Assert\Length(max=50)
+     * @Assert\Regex(pattern="/[A-Za-z]+/")
      */
     private $name;
 
