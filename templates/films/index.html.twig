@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'films/base.html.twig' %}
 
 {% block body %}
 
@@ -18,7 +18,7 @@
             {% for genre in film.genres %}
                 <li>{{ genre.name }}</li>
             {% endfor %}
-            <a href="/films/delete/{{ film.id }}">Delete</a>
+            <a href="/films/update/{{ film.id }}">Update</a> | <a href="/films/delete/{{ film.id }}">Delete</a>
         </div>
         <hr/>
     {% endfor %}

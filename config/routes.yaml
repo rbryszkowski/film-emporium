@@ -1,25 +1,25 @@
 
-#User interface - returns html
+#actions that render pages
 
 indexFilm:
    path: /
    controller: App\Controller\FilmsController::index
 
-# film database actions - returns json response
-addFilm:
-   path: /films/add
-   controller: App\Controller\FilmsController::addFilm
-   methods: POST
+updateFilmPage:
+  path: /films/update/{id}
+  controller: App\Controller\FilmsController::updateFilmPage
 
-updateFilm:
-   path: /films/update/{id}
-   controller: App\Controller\FilmsController::updateFilm
-   methods: POST
+#actions that modify the database
 
 deleteFilm:
   path: /films/delete/{id}
   controller: App\Controller\FilmsController::deleteFilm
   methods: GET
+
+addFilm:
+   path: /films/add
+   controller: App\Controller\FilmsController::addFilm
+   methods: POST
 
 findMatchingFilm:
    path: /films/{searchBy}/{input}
