@@ -1,33 +1,25 @@
-
-#actions that render pages
-
-indexFilm:
-   path: /
-   controller: App\Controller\FilmsController::index
+#routes that render pages
+filmIndexPage:
+  path: /
+  controller: App\Controller\FilmsController::filmIndexPage
 
 updateFilmPage:
   path: /films/update/{id}
   controller: App\Controller\FilmsController::updateFilmPage
 
-#actions that modify the database
+addFilmPage:
+  path: /films/add
+  controller: App\Controller\FilmsController::addFilmPage
 
+#routes that modify the database
 deleteFilm:
   path: /films/delete/{id}
   controller: App\Controller\FilmsController::deleteFilm
   methods: GET
 
 addFilm:
-   path: /films/add
-   controller: App\Controller\FilmsController::addFilm
-   methods: POST
-
-findMatchingFilm:
-   path: /films/{searchBy}/{input}
-   controller: App\Controller\FilmsController::findMatching
-   methods: GET
+  path: /films/add
+  controller: App\Controller\FilmsController::addFilm
+  methods: POST
 
 
-showAllFilms:
-   path: /films/all
-   controller: App\Controller\FilmsController::showAll
-   methods: GET

@@ -2,15 +2,14 @@
 
 {% block body %}
 
-    <h3>Add Film:</h3>
-
-    {{ form(form) }}
+    <p><h3><a href="/films/add">Add Film</a></h3></p>
 
     <hr/>
 
     <h3>Films:</h3>
-    {% for film in films  %}
-        <div>
+    {% if films|length > 0 %}
+        {% for film in films  %}
+            <p>
             <p>Title: {{ film.title }}</p>
             <p>Description: {{ film.description }}</p>
             <p>Director: {{ film.director ? film.director.name : '(No Director)' }}</p>
@@ -18,8 +17,12 @@
             {% for genre in film.genres %}
                 <li>{{ genre.name }}</li>
             {% endfor %}
-            <a href="/films/update/{{ film.id }}">Update</a> | <a href="/films/delete/{{ film.id }}">Delete</a>
-        </div>
-        <hr/>
-    {% endfor %}
+            <p><a href="/films/update/{{ film.id }}">Update</a> | <a href="/films/delete/{{ film.id }}">Delete</a></p>
+            </div>
+            <hr/>
+        {% endfor %}
+    {% else %}
+        <p>No films in database!</p>
+    {% endif %}
+
 {% endblock %}

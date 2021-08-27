@@ -17,8 +17,21 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class FilmsController extends AbstractController
 {
 
-    public function index(Request $request) : Response
+    public function filmIndexPage(Request $request): Response
     {
+
+        // all our results currently
+        $films = $this->getDoctrine()->getRepository(Film::class)->findAll();
+
+        return $this->render('films/index.html.twig', [
+            'films' => $films
+        ]);
+
+    }
+
+    public function addFilmPage(Request $request): Response
+    {
+
         $filmModel = new Film();
 
         $form = $this->createForm(FilmType::class, $filmModel);
@@ -31,21 +44,19 @@ class FilmsController extends AbstractController
                 $manager = $this->getDoctrine()->getManager();
                 $manager->persist($filmModel);
                 $manager->flush();
+
+                return $this->redirectToRoute('filmIndexPage');
             }
 
         }
 
-        // all our results currently
-        $films = $this->getDoctrine()->getRepository(Film::class)->findAll();
-
-        return $this->render('films/index.html.twig', [
-            'form' => $form->createView(),
-            'films' => $films
+        return $this->render('films/addFilmPage/addFilmPage.html.twig', [
+            'form' => $form->createView()
         ]);
 
     }
 
-    public function updateFilmPage(int $id, Request $request) : Response
+    public function updateFilmPage(int $id, Request $request): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
 
@@ -62,7 +73,7 @@ class FilmsController extends AbstractController
                 $manager->persist($film);
                 $manager->flush();
 
-                return $this->redirectToRoute('indexFilm');
+                return $this->redirectToRoute('filmIndexPage');
             }
 
         }
@@ -79,58 +90,12 @@ class FilmsController extends AbstractController
 
         $film = $entityManager->getRepository(Film::class)->find($id);
 
-        $entityManager->remove($film);
-        $entityManager->flush();
+        if ($film !== NULL) {
+            $entityManager->remove($film);
+            $entityManager->flush();
+        }
 
-        return $this->redirectToRoute('indexFilm');
-    }
-
-
-    public function addFilm(Request $request): Response
-    {
-
-        //get title, desc., and director from request
-        $title = $request->get('title');
-        $description = $request->get('description');
-        $director_name = $request->get('director');
-
-        //create new director object
-        $director = new Director();
-        $director->setName($director_name);
-
-        $film = new Film();
-        $film->setTitle($title);
-        $film->setDescription($description);
-        //relates this film to the director
-        $film->setDirector($director);
-
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($film);
-        $entityManager->persist($director);
-        $entityManager->flush();
-
-        return $this->json($film);
-
-    }
-
-    public function findMatching(string $searchBy='title', string $input): Response
-    {
-
-        if ($searchBy === 'film_id') {$searchBy = 'id';}
-
-        $results = $this->getDoctrine()->getRepository(Film::class)->findBy([$searchBy => $input]);
-
-        return $this->json($results);
-
-    }
-
-    public function showAll(): Response
-    {
-
-        $results = $this->getDoctrine()->getRepository(Film::class)->findAll();
-
-        return $this->json($results);
-
+        return $this->redirectToRoute('filmIndexPage');
     }
 
 }
