@@ -16,7 +16,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class FilmsController extends AbstractController
 {
-    public function index(Request $request, ValidatorInterface $validator) : Response
+
+    public function index(Request $request) : Response
     {
         $filmModel = new Film();
 
@@ -43,6 +44,47 @@ class FilmsController extends AbstractController
         ]);
 
     }
+
+    public function updateFilmPage(int $id, Request $request) : Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $film = $entityManager->getRepository(Film::class)->find($id);
+
+        $form = $this->createForm(FilmType::class, $film);
+
+        if ($request->isMethod('POST')) {
+
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $manager = $this->getDoctrine()->getManager();
+                $manager->persist($film);
+                $manager->flush();
+
+                return $this->redirectToRoute('indexFilm');
+            }
+
+        }
+
+        return $this->render('films/updateFilmPage/updateFilmPage.html.twig', [
+            'form' => $form->createView()
+        ]);
+
+    }
+
+    public function deleteFilm(int $id): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $film = $entityManager->getRepository(Film::class)->find($id);
+
+        $entityManager->remove($film);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('indexFilm');
+    }
+
 
     public function addFilm(Request $request): Response
     {
@@ -89,39 +131,6 @@ class FilmsController extends AbstractController
 
         return $this->json($results);
 
-    }
-
-    ////////
-
-    public function updateFilm(int $id, Request $request): Response
-    {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $film = $entityManager->getRepository(Film::class)->find($id);
-        $title = $request->get('newTitle');
-        $genre = $request->get('newGenre');
-        $description = $request->get('newDescription');
-
-        $film->setTitle($title);
-        $film->setGenre($genre);
-        $film->setDescription($description);
-
-        $entityManager->persist($film);
-        $entityManager->flush();
-
-        return $this->json($film);
-    }
-
-    public function deleteFilm(int $id): Response
-    {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $film = $entityManager->getRepository(Film::class)->find($id);
-
-        $entityManager->remove($film);
-        $entityManager->flush();
-
-        return $this->redirectToRoute('indexFilm');
     }
 
 }
