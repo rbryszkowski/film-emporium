@@ -2,27 +2,32 @@
 
 {% block body %}
 
-    <p><h3><a href="/films/add">Add Film</a></h3></p>
+    <div class="container">
 
-    <hr/>
+        <p><h3><a href="/films/add">Add Film</a></h3></p>
 
-    <h3>Films:</h3>
-    {% if films|length > 0 %}
-        {% for film in films  %}
-            <p>
-            <p>Title: {{ film.title }}</p>
-            <p>Description: {{ film.description }}</p>
-            <p>Director: {{ film.director ? film.director.name : '(No Director)' }}</p>
-            <p>Genres:</p>
-            {% for genre in film.genres %}
-                <li>{{ genre.name }}</li>
+        <hr/>
+
+        <h3>Films:</h3>
+        {% if films|length > 0 %}
+            {% for film in films  %}
+                <div>
+                <p>Title: {{ film.title }}</p>
+                <p>Description: {{ film.description }}</p>
+                <p>Director: {{ film.director ? film.director.name : '(No Director)' }}</p>
+                <p>Genres:</p>
+                {% for genre in film.genres %}
+                    <li>{{ genre.name }}</li>
+                {% endfor %}
+                <p><a href="/films/update/{{ film.id }}">Update</a> | <a href="/films/delete/{{ film.id }}">Delete</a></p>
+                </div>
+                <hr/>
             {% endfor %}
-            <p><a href="/films/update/{{ film.id }}">Update</a> | <a href="/films/delete/{{ film.id }}">Delete</a></p>
-            </div>
-            <hr/>
-        {% endfor %}
-    {% else %}
-        <p>No films in database!</p>
-    {% endif %}
+        {% else %}
+            <p>No films in database!</p>
+        {% endif %}
+
+    </div>
+
 
 {% endblock %}
