@@ -4,7 +4,30 @@
 
     <div class="container">
 
-        <p><h3><a href="/films/add">Add Film</a></h3></p>
+        <h3>Search Film</h3>
+
+        <form class="row mt-4" action="/" method="GET">
+                <div class="col">
+                    <input class="form-control" type="search" name="search" value="{{ search }}" />
+                </div>
+                <div class="col">
+                    <select class="form-control" name="genres" id="genres_select">
+                        <option value="">--genre--</option>
+                        {% for genre in genres %}
+                            <option value="{{ genre.name }}" {% if genre.name == selectedGenre %}selected{% endif %} > {{ genre.name }} </option>
+                        {%  endfor %}
+                    </select>
+                </div>
+                <div class="col">
+                    <input class="form-control btn btn-primary" type="submit">
+                </div>
+        </form>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <button class="btn btn-primary" type="submit" formaction="/films/add">Add Film</button>
+            </div>
+        </div>
 
         <hr/>
 

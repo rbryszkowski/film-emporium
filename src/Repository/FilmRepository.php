@@ -2,8 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Director;
 use App\Entity\Film;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -22,20 +24,39 @@ class FilmRepository extends ServiceEntityRepository
     /**
      * @return Film[]
      */
-    public function findAllLike(string $column, string $queryVal): array
+    public function findBySearch(string $searchTerm, string $genre): array
     {
-        $em = $this->getEntityManager();
 
-        $qb = $em->createQueryBuilder();
+        $qb = $this->_em->createQueryBuilder();
 
         $query = $qb
-        ->select('film')
-        ->from('Film', 'film')
-        ->where( $qb->expr()->like( ( 'film.' . $column) , (':' . $column) ) )
-        ->setParameter($column, ('%' . $queryVal . '%') )
-        ->getQuery();
+            ->select('film')
+            ->from(Film::class, 'film')
+            ->leftJoin('film.director', 'director')
+            ->leftJoin('film.genres', 'genre')
+            ->where(
+                $qb->expr()->like('film.title', ':search')
+            )
+            ->orWhere(
+                $qb->expr()->like('film.description', ':search')
+            )
+            ->orWhere(
+                $qb->expr()->like('director.name', ':search')
+            )
+            ->setParameter('search', '%' . $searchTerm . '%');
 
-        return $query->execute();
+        if ($genre !== '')
+        {
+            $qb
+                ->andWhere(
+                    $qb->expr()->eq('genre.name', ':genre')
+                )
+                ->setParameter('genre', $genre)
+            ;
+        }
+
+        return $query->getQuery()->getResult();
+
     }
 
     // /**
