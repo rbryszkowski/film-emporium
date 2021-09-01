@@ -20,11 +20,19 @@ class FilmsController extends AbstractController
     public function filmIndexPage(Request $request): Response
     {
 
-        // all our results currently
-        $films = $this->getDoctrine()->getRepository(Film::class)->findAll();
+        $search = $request->get('search', '');
+
+        $selectedGenre = $request->get('genres', '');
+
+        $filmsReturned = $this->getDoctrine()->getRepository(Film::class)->findBySearch($search, $selectedGenre);
+
+        $allGenres = $this->getDoctrine()->getRepository(Genre::class)->findAll();
 
         return $this->render('films/index.html.twig', [
-            'films' => $films
+            'films' => $filmsReturned,
+            'genres' => $allGenres,
+            'search' => $search,
+            'selectedGenre' => $selectedGenre
         ]);
 
     }
