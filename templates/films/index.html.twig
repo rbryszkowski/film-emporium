@@ -49,23 +49,6 @@
                         <a class="btn btn-primary" type="submit" href="/films/details/{{ film.id }}">Details</a>
                     </div>
                 </div>
-
-{#                <div>#}
-{#                <p>Title: {{ film.title }}</p>#}
-{#                <p>Description: {{ film.description }}</p>#}
-{#                <p>Director: {{ film.director ? film.director.name : '(No Director)' }}</p>#}
-{#                <p>Genres:</p>#}
-{#                {% for genre in film.genres %}#}
-{#                    <li>{{ genre.name }}</li>#}
-{#                {% endfor %}#}
-{#                <p class="mt-4">#}
-{#                    <a class="btn btn-primary" type="submit" href="/films/update/{{ film.id }}">Update</a>#}
-{#                    &nbsp;&nbsp;#}
-{#                    <a class="btn btn-primary" type="submit" href="/films/delete/{{ film.id }}">Delete</a>#}
-{#                    &nbsp;&nbsp;#}
-{#                    <a class="btn btn-primary" type="submit" href="/films/details/{{ film.id }}">Details</a>#}
-{#                </p>#}
-{#                </div>#}
                 <hr/>
             {% endfor %}
         {% else %}
