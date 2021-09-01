@@ -37,6 +37,17 @@ class FilmsController extends AbstractController
 
     }
 
+    public function filmDetailsPage(int $id): Response
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $film = $em->getRepository(Film::class)->find($id);
+
+        return $this->render('films/filmDetailsPage/filmDetailsPage.html.twig', [
+            'film' => $film
+        ]);
+    }
+
     public function addFilmPage(Request $request): Response
     {
 
