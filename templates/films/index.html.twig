@@ -2,27 +2,60 @@
 
 {% block body %}
 
-    <p><h3><a href="/films/add">Add Film</a></h3></p>
+    <div class="container">
 
-    <hr/>
+        <h3>Search Film</h3>
 
-    <h3>Films:</h3>
-    {% if films|length > 0 %}
-        {% for film in films  %}
-            <p>
-            <p>Title: {{ film.title }}</p>
-            <p>Description: {{ film.description }}</p>
-            <p>Director: {{ film.director ? film.director.name : '(No Director)' }}</p>
-            <p>Genres:</p>
-            {% for genre in film.genres %}
-                <li>{{ genre.name }}</li>
-            {% endfor %}
-            <p><a href="/films/update/{{ film.id }}">Update</a> | <a href="/films/delete/{{ film.id }}">Delete</a></p>
+        <form class="row mt-4" action="/" method="GET">
+                <div class="col">
+                    <input class="form-control" type="search" name="search" value="{{ search }}" />
+                </div>
+                <div class="col">
+                    <select class="form-control" name="genres" id="genres_select">
+                        <option value="">--genre--</option>
+                        {% for genre in genres %}
+                            <option value="{{ genre.name }}" {% if genre.name == selectedGenre %}selected{% endif %} > {{ genre.name }} </option>
+                        {%  endfor %}
+                    </select>
+                </div>
+                <div class="col">
+                    <input class="form-control btn btn-primary" type="submit">
+                </div>
+        </form>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <a class="btn btn-primary" type="submit" href="/films/add">Add Film</a>
             </div>
-            <hr/>
-        {% endfor %}
-    {% else %}
-        <p>No films in database!</p>
-    {% endif %}
+        </div>
+
+        <br>
+
+        <h3>Films:</h3>
+
+        <hr/>
+
+        {% if films|length > 0 %}
+            {% for film in films  %}
+                <div class="row">
+                    <div class="col-9">
+                        <p><b>Title:</b> {{ film.title }}  |  <b>Director:</b> {{ film.director ? film.director.name : '(No Director)' }}</p>
+                    </div>
+                    <div class="col-3">
+                        <a class="btn btn-primary" type="submit" href="/films/update/{{ film.id }}">Update</a>
+                        &nbsp;&nbsp;
+                        <a class="btn btn-primary" type="submit" href="/films/delete/{{ film.id }}">Delete</a>
+                        &nbsp;&nbsp;
+                        <a class="btn btn-primary" type="submit" href="/films/details/{{ film.id }}">Details</a>
+                    </div>
+                </div>
+                <hr/>
+            {% endfor %}
+        {% else %}
+            <p>No films in database!</p>
+        {% endif %}
+
+    </div>
+
 
 {% endblock %}

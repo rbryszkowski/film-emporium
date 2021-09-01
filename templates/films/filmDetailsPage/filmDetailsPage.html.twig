@@ -1,0 +1,20 @@
+{% extends 'films/base.html.twig' %}
+
+{% block body %}
+
+    <div class="container">
+
+        <h3>{{ film.title }}</h3>
+
+        <div>
+            <p>Description: {{ film.description }}</p>
+            <p>Director: {{ film.director ? film.director.name : '(No Director)' }}</p>
+            <p>Genres:</p>
+            {% for genre in film.genres %}
+                <li>{{ genre.name }}</li>
+            {% endfor %}
+        </div>
+
+    </div>
+
+{% endblock %}
