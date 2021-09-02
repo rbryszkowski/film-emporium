@@ -4,16 +4,71 @@
 
     <div class="container">
 
-        <h3>{{ film.title }}</h3>
+        {% if statusCode != 200 %}
+            <h3>Could not retrieve data. Status Code: {{ statusCode }}</h3>
+        {% elseif omdbData.Response != 'True'  %}
+            <h3>Could not find film details!</h3>
+        {% else %}
+            <div class="row main-heading mb-4">
+                <div class="col-12">
+                    <h1>{{ omdbData.Title }}</h1>
+                </div>
+            </div>
 
-        <div>
-            <p>Description: {{ film.description }}</p>
-            <p>Director: {{ film.director ? film.director.name : '(No Director)' }}</p>
-            <p>Genres:</p>
-            {% for genre in film.genres %}
-                <li>{{ genre.name }}</li>
-            {% endfor %}
-        </div>
+            <div class="row">
+                <div class="col-8">
+                    <div class="row">
+                        {% set omdbGenres = omdbData.Genre|split(',') %}
+                        {% for genre in omdbGenres %}
+                            {% set genre = genre|trim %}
+                        {% endfor %}
+                        <div class="col">
+                            {% for genre in omdbGenres %}
+                                <button class="btn btn-secondary">{{ genre }}</button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        {{ omdbData.Plot }}
+                        <hr>
+                    </div>
+                    <div class="row">
+                        Director: {{ omdbData.Director }}
+                        <hr>
+                    </div>
+                    <div class="row">
+                        Writer: {{ omdbData.Writer }}
+                        <hr>
+                    </div>
+                    <div class="row">
+                        Rated: {{ omdbData.Rated }}
+                        <hr>
+                    </div>
+                    <div class="row">
+                        Year: {{ omdbData.Year }}
+                        <hr>
+                    </div>
+                    <div class="row">
+                        Runtime: {{ omdbData.Runtime }}
+                        <hr>
+                    </div>
+                    <div class="row">
+                        Ratings:
+                        <br>
+                        <ul>
+                            {% for rating in omdbData.Ratings %}
+                                <li>{{ rating.Source }} : {{ rating.Value }}</li>
+                            {% endfor %}
+                        </ul>
+                        <hr>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <img class="film-img" src="{{ omdbData.Poster }}" width="100%" height="100%">
+                </div>
+            </div>
+        {% endif %}
 
     </div>
 
