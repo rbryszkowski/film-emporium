@@ -3,6 +3,10 @@ filmIndexPage:
   path: /
   controller: App\Controller\FilmsController::filmIndexPage
 
+filmDetailsPage:
+  path: /films/details/{id}
+  controller: App\Controller\FilmsController::filmDetailsPage
+
 updateFilmPage:
   path: /films/update/{id}
   controller: App\Controller\FilmsController::updateFilmPage
@@ -17,9 +21,5 @@ deleteFilm:
   controller: App\Controller\FilmsController::deleteFilm
   methods: GET
 
-addFilm:
-  path: /films/add
-  controller: App\Controller\FilmsController::addFilm
-  methods: POST
 
 

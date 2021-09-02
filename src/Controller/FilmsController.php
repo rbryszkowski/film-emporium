@@ -7,6 +7,7 @@ use App\Entity\Film;
 
 use App\Entity\Genre;
 use App\Form\FilmType;
+use GuzzleHttp\Client;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,6 +36,38 @@ class FilmsController extends AbstractController
             'selectedGenre' => $selectedGenre
         ]);
 
+    }
+
+    public function filmDetailsPage(int $id): Response
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $film = $em->getRepository(Film::class)->find($id);
+
+        if (!$film) {
+            throw $this->createNotFoundException('The film does not exist');
+        }
+
+        $client = new Client();
+
+        $params = http_build_query([
+            'apikey' => '34e585c5',
+            't' => $film->getTitle()
+        ]);
+
+        $url = 'http://www.omdbapi.com/?' . $params;
+
+        $response = $client->request('GET', $url);
+
+        $omdbStatus = $response->getStatusCode();
+
+        $omdbData = json_decode($response->getBody(), true);
+
+        return $this->render('films/filmDetailsPage/filmDetailsPage.html.twig', [
+            'film' => $film,
+            'omdbData' => $omdbData,
+            'statusCode' => $omdbStatus
+        ]);
     }
 
     public function addFilmPage(Request $request): Response
