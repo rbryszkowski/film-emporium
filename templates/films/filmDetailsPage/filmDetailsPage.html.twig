@@ -5,9 +5,9 @@
     <div class="container">
 
         {% if statusCode != 200 %}
-            <h3>Could not retrieve data. Status Code: {{ statusCode }}</h3>
+            <h3>Could not retrieve data for this film. Status Code: {{ statusCode }}</h3>
         {% elseif omdbData.Response != 'True'  %}
-            <h3>Could not find film details!</h3>
+            <h3>Could not find details for this film!</h3>
         {% else %}
             <div class="row main-heading mb-4">
                 <div class="col-12">

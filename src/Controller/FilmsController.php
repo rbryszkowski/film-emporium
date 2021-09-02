@@ -44,6 +44,10 @@ class FilmsController extends AbstractController
 
         $film = $em->getRepository(Film::class)->find($id);
 
+        if (!$film) {
+            throw $this->createNotFoundException('The film does not exist');
+        }
+
         $client = new Client();
 
         $params = http_build_query([
@@ -55,12 +59,9 @@ class FilmsController extends AbstractController
 
         $response = $client->request('GET', $url);
 
-        $omdbStatus = json_decode($response->getStatusCode(), true);
+        $omdbStatus = $response->getStatusCode();
 
         $omdbData = json_decode($response->getBody(), true);
-
-        dump($omdbStatus);
-        dump($omdbData);
 
         return $this->render('films/filmDetailsPage/filmDetailsPage.html.twig', [
             'film' => $film,
