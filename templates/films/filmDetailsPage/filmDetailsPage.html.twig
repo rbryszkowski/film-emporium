@@ -4,69 +4,92 @@
 
     <div class="container">
 
-        {% if statusCode != 200 or omdbData.Response != 'True' %}
-            <h3>Could not find details for this film!</h3>
-        {% else %}
-            <div class="row main-heading mb-4">
-                <div class="col-12">
-                    <h1>{{ omdbData.Title }}</h1>
-                </div>
-            </div>
-
+        <div class="container-fluid py-5">
+            <h1 class="display-5 fw-bold">{{ film.title }}</h1>
+            <h4>{{  film.description }}</h4>
+            <p class="col-md-8 fs-4">Director: {{ film.director.name }}</p>
             <div class="row">
-                <div class="col-8">
-                    <div class="row">
-                        {% set omdbGenres = omdbData.Genre|split(',') %}
-                        {% for genre in omdbGenres %}
-                            {% set genre = genre|trim %}
-                        {% endfor %}
-                        <div class="col">
-                            {% for genre in omdbGenres %}
-                                <button class="btn btn-secondary">{{ genre }}</button>
-                            {% endfor %}
-                        </div>
+                {% for genre in film.genres %}
+                    <h3 class="col-1"><span class="badge bg-secondary">{{  genre.name }}</span></h3>
+                {% endfor %}
+            </div>
+        </div>
+
+        <hr/>
+
+        <div class="accordion" id="accordionExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        OMDB API
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        {% if statusCode != 200 or omdbData.Response != 'True' %}
+                            <h3>Could not find details for this film!</h3>
+                        {% else %}
+                            <div class="row">
+                                <div class="col-3">
+                                    <img class="film-img" src="{{ omdbData.Poster }}">
+                                </div>
+                                <div class="col-8">
+                                    <div class="row">
+                                        Plot: {{ omdbData.Plot }}
+                                        <hr>
+                                    </div>
+                                    <div class="row">
+                                        Director: {{ omdbData.Director }}
+                                        <hr>
+                                    </div>
+                                    <div class="row">
+                                        Writer: {{ omdbData.Writer }}
+                                        <hr>
+                                    </div>
+                                    <div class="row">
+                                        Rated: {{ omdbData.Rated }}
+                                        <hr>
+                                    </div>
+                                    <div class="row">
+                                        Year: {{ omdbData.Year }}
+                                        <hr>
+                                    </div>
+                                    <div class="row">
+                                        Runtime: {{ omdbData.Runtime }}
+                                        <hr>
+                                    </div>
+                                    <div class="row">
+                                        {% set omdbGenres = omdbData.Genre|split(',') %}
+                                        {% for genre in omdbGenres %}
+                                            {% set genre = genre|trim %}
+                                        {% endfor %}
+                                        <div class="col">
+                                            {% for genre in omdbGenres %}
+                                                <button class="btn btn-secondary">{{ genre }}</button>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <p>Ratings:</p>
+                                        <br>
+                                        <ul>
+                                            {% for rating in omdbData.Ratings %}
+                                                <li>{{ rating.Source }} : {{ rating.Value }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+
+
+
+                                </div>
+                            </div>
+                        {% endif %}
                     </div>
-                    <br>
-                    <div class="row">
-                        {{ omdbData.Plot }}
-                        <hr>
-                    </div>
-                    <div class="row">
-                        Director: {{ omdbData.Director }}
-                        <hr>
-                    </div>
-                    <div class="row">
-                        Writer: {{ omdbData.Writer }}
-                        <hr>
-                    </div>
-                    <div class="row">
-                        Rated: {{ omdbData.Rated }}
-                        <hr>
-                    </div>
-                    <div class="row">
-                        Year: {{ omdbData.Year }}
-                        <hr>
-                    </div>
-                    <div class="row">
-                        Runtime: {{ omdbData.Runtime }}
-                        <hr>
-                    </div>
-                    <div class="row">
-                        Ratings:
-                        <br>
-                        <ul>
-                            {% for rating in omdbData.Ratings %}
-                                <li>{{ rating.Source }} : {{ rating.Value }}</li>
-                            {% endfor %}
-                        </ul>
-                        <hr>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <img class="film-img" src="{{ omdbData.Poster }}" width="100%" height="100%">
                 </div>
             </div>
-        {% endif %}
+        </div>
+
 
     </div>
 
