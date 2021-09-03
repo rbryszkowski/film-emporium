@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Genre;
+use App\Form\GenreType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,23 +13,29 @@ class GenresController extends AbstractController
 
     public function manageGenresPage(Request $request): Response
     {
-        $em = $this->getDoctrine()->getManager();
+
+        $genreModel = new Genre();
+
+        $form = $this->createForm(GenreType::class, $genreModel);
 
         if ($request->isMethod('POST')) {
 
-            $genreToAdd = $request->get('genreToAdd', '');
-            $genreModel = new Genre();
-            $genreModel->setName($genreToAdd);
+            $form->handleRequest($request);
 
-            $manager = $this->getDoctrine()->getManager();
-            $manager->persist($genreModel);
-            $manager->flush();
+            if ($form->isSubmitted() && $form->isValid()) {
+                $manager = $this->getDoctrine()->getManager();
+                $manager->persist($genreModel);
+                $manager->flush();
+            }
+
         }
 
+        $em = $this->getDoctrine()->getManager();
         $genres = $em->getRepository(Genre::class)->findAll();
 
-        return $this->render('films/manageGenresPage/manageGenresPage.html.twig', [
-            'genres' => $genres
+        return $this->render('genres/manageGenresPage.html.twig', [
+            'genres' => $genres,
+            'form' => $form->createView()
         ]);
 
     }

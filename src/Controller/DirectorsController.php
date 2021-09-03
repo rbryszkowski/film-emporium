@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Director;
+use App\Form\DirectorType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,23 +13,29 @@ class DirectorsController extends AbstractController
 
     public function manageDirectorsPage(Request $request): Response
     {
-        $em = $this->getDoctrine()->getManager();
+
+        $directorModel = new Director();
+
+        $form = $this->createForm(DirectorType::class, $directorModel);
 
         if ($request->isMethod('POST')) {
 
-            $directorToAdd = $request->get('directorToAdd', '');
-            $directorModel = new Director();
-            $directorModel->setName($directorToAdd);
+            $form->handleRequest($request);
 
-            $manager = $this->getDoctrine()->getManager();
-            $manager->persist($directorModel);
-            $manager->flush();
+            if ($form->isSubmitted() && $form->isValid()) {
+                $manager = $this->getDoctrine()->getManager();
+                $manager->persist($directorModel);
+                $manager->flush();
+            }
+
         }
 
+        $em = $this->getDoctrine()->getManager();
         $directors = $em->getRepository(Director::class)->findAll();
 
-        return $this->render('films/manageDirectorsPage/manageDirectorsPage.html.twig', [
-            'directors' => $directors
+        return $this->render('directors/manageDirectorsPage.html.twig', [
+            'directors' => $directors,
+            'form' => $form->createView()
         ]);
 
     }

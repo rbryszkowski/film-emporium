@@ -1,14 +1,27 @@
-{% extends 'films/base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block body %}
 
     <div class="container">
 
-        <form class="form-inline" action="/directors" method="POST">
-            <label for="add-director">Add Director:</label>
-            <input class="form-control" id="add-director" type="text" name="directorToAdd" />
-            <button type="submit" class="btn btn-primary">Add Director</button>
-        </form>
+        {{  form_start(form) }}
+
+        <div class="row mt-2">
+            <div class="form-group col-2">
+                <p>{{ form_label(form.name) }}:</p>
+            </div>
+            <div class="form-group col-5">
+                {{ form_errors(form.name) }}
+                {{ form_widget( form.name, {'attr': {'class': 'form-control'}} ) }}
+            </div>
+            <div class="form-group col-5">
+                {{ form_widget(form.add_director, {'attr': {'class': 'btn btn-primary'}}) }}
+            </div>
+        </div>
+
+        {{ form_end(form) }}
+
+        <br><br>
 
         <h3>Directors:</h3>
 
