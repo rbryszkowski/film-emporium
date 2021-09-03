@@ -16,12 +16,12 @@ addFilmPage:
   controller: App\Controller\FilmsController::addFilmPage
 
 manageGenresPage:
-  path: /films/genres
-  controller: App\Controller\FilmsController::manageGenresPage
+  path: /genres
+  controller: App\Controller\GenresController::manageGenresPage
 
 manageDirectorsPage:
-  path: /films/directors
-  controller: App\Controller\FilmsController::manageDirectorsPage
+  path: /directors
+  controller: App\Controller\DirectorsController::manageDirectorsPage
 
 #routes that modify the database
 deleteFilm:
@@ -30,13 +30,13 @@ deleteFilm:
   methods: GET
 
 deleteGenre:
-  path: /films/genres/delete/{id}
-  controller: App\Controller\FilmsController::deleteGenre
+  path: /genres/delete/{id}
+  controller: App\Controller\GenresController::deleteGenre
   methods: GET
 
 deleteDirector:
-  path: /films/directors/delete/{id}
-  controller: App\Controller\FilmsController::deleteDirector
+  path: /directors/delete/{id}
+  controller: App\Controller\DirectorsController::deleteDirector
   methods: GET
 
 
