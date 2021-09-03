@@ -1,0 +1,54 @@
+{% extends 'films/base.html.twig' %}
+
+{% block body %}
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary py-3 px-4 mb-4">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/films/add">Add Films</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/films/genres">Manage Genres</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/films/directors">Manage Directors</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <form class="form-inline" action="/films/directors" method="POST">
+            <label for="add-director">Add Director:</label>
+            <input class="form-control" id="add-director" type="text" name="directorToAdd" />
+            <button type="submit" class="btn btn-primary">Add Director</button>
+        </form>
+
+        <h3>Directors:</h3>
+
+        <hr/>
+
+        {% if directors|length > 0 %}
+            {% for director in directors  %}
+                <div class="row">
+                    <div class="col-9">
+                        <p>{{ director.name }}</p>
+                    </div>
+                    <div class="col-3">
+                        <a class="btn btn-primary" type="submit" href="/films/directors/delete/{{ director.id }}">Delete</a>
+                    </div>
+                </div>
+                <hr/>
+            {% endfor %}
+        {% else %}
+            <p>No Directors, add some!</p>
+        {% endif %}
+
+    </div>
+
+{% endblock %}
