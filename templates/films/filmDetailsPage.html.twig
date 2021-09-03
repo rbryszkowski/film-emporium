@@ -1,9 +1,8 @@
-{% extends 'films/base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block body %}
 
     <div class="container">
-
         <div class="container-fluid py-5">
             <h1 class="display-5 fw-bold">{{ film.title }}</h1>
             <h4>{{  film.description }}</h4>
@@ -63,25 +62,21 @@
                                         {% for genre in omdbGenres %}
                                             {% set genre = genre|trim %}
                                         {% endfor %}
-                                        <div class="col">
+                                        <div class="col p-0">
                                             {% for genre in omdbGenres %}
                                                 <button class="btn btn-secondary">{{ genre }}</button>
                                             {% endfor %}
                                         </div>
                                     </div>
-
+                                    <br>
                                     <div class="row">
                                         <p>Ratings:</p>
-                                        <br>
                                         <ul>
                                             {% for rating in omdbData.Ratings %}
                                                 <li>{{ rating.Source }} : {{ rating.Value }}</li>
                                             {% endfor %}
                                         </ul>
                                     </div>
-
-
-
                                 </div>
                             </div>
                         {% endif %}

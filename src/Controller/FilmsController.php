@@ -63,7 +63,7 @@ class FilmsController extends AbstractController
 
         $omdbData = json_decode($response->getBody(), true);
 
-        return $this->render('films/filmDetailsPage/filmDetailsPage.html.twig', [
+        return $this->render('films/filmDetailsPage.html.twig', [
             'film' => $film,
             'omdbData' => $omdbData,
             'statusCode' => $omdbStatus
@@ -91,7 +91,7 @@ class FilmsController extends AbstractController
 
         }
 
-        return $this->render('films/addFilmPage/addFilmPage.html.twig', [
+        return $this->render('films/addFilmPage.html.twig', [
             'form' => $form->createView()
         ]);
 
@@ -119,7 +119,7 @@ class FilmsController extends AbstractController
 
         }
 
-        return $this->render('films/updateFilmPage/updateFilmPage.html.twig', [
+        return $this->render('films/updateFilmPage.html.twig', [
             'form' => $form->createView()
         ]);
 
@@ -131,7 +131,7 @@ class FilmsController extends AbstractController
 
         $film = $entityManager->getRepository(Film::class)->find($id);
 
-        if ($film !== NULL) {
+        if ($film !== null) {
             $entityManager->remove($film);
             $entityManager->flush();
         }

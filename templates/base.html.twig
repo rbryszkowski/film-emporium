@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Remy's Film Emporium{% endblock %}</title>
+        {# Run `composer require symfony/webpack-encore-bundle`
+           and uncomment the following Encore helpers to start using Symfony UX #}
+        {% block stylesheets %}
+            {#{{ encore_entry_link_tags('app') }}#}
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+            <link href="{{ asset("css/style.css") }}" rel="stylesheet" />
+        {% endblock %}
+
+        {% block javascripts %}
+            {#{{ encore_entry_script_tags('app') }}#}
+        {% endblock %}
+    </head>
+
+
+    <body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary py-3 px-4 mb-4">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/films/add">Add Films</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/genres">Manage Genres</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/directors">Manage Directors</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+        {% block body %}{% endblock %}
+
+    </body>
+
+    {% block deferred_javascripts %}
+        {#{{ encore_entry_script_tags('app') }}#}
+    {% endblock %}
+</html>
