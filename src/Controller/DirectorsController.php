@@ -46,7 +46,7 @@ class DirectorsController extends AbstractController
 
         $director = $em->getRepository(Director::class)->find($id);
 
-        if ($director !== NULL) {
+        if ($director !== null) {
             $em->remove($director);
             $em->flush();
         }

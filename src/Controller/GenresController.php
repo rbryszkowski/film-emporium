@@ -46,7 +46,7 @@ class GenresController extends AbstractController
 
         $genre = $em->getRepository(Genre::class)->find($id);
 
-        if ($genre !== NULL) {
+        if ($genre !== null) {
             $em->remove($genre);
             $em->flush();
         }
