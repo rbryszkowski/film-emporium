@@ -9,6 +9,7 @@ use App\Entity\Film;
 use App\Entity\Genre;
 use App\Form\FilmType;
 use GuzzleHttp\Client;
+use PhpParser\Node\Expr\Cast\Object_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,9 +32,13 @@ class FilmsController extends AbstractController
         $featuredFilmIds = $this->getDoctrine()->getRepository(FeatureFilm::class)->findAll();
 
         $featuredFilms = [];
+        $featuredFilmsOmdb = [];
 
+        $i = 0;
         foreach($featuredFilmIds as $film) {
             $featuredFilms[] = $this->getDoctrine()->getRepository(Film::class)->find($film->getFilmId());
+            $featuredFilmsOmdb[] = $this->findFilmOnOmdb($featuredFilms[$i]->getTitle());
+            $i++;
         }
 
         $allGenres = $this->getDoctrine()->getRepository(Genre::class)->findAll();
@@ -46,6 +51,24 @@ class FilmsController extends AbstractController
             'selectedGenre' => $selectedGenre
         ]);
 
+    }
+
+    public function findFilmOnOmdb(string $title): Array
+    {
+        $client = new Client();
+
+        $params = http_build_query([
+            'apikey' => '34e585c5',
+            't' => $title
+        ]);
+
+        $url = 'http://www.omdbapi.com/?' . $params;
+
+        $response = $client->request('GET', $url);
+
+        $omdbData = json_decode($response->getBody(), true);
+
+        return $omdbData;
     }
 
     public function filmDetailsPage(int $id): Response
