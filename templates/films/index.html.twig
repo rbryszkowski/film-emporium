@@ -5,6 +5,26 @@
 
     <div class="container">
 
+        <h3>Featured Films:</h3>
+        <div class="row">
+            {% for film in featured %}
+                <div class="col">
+                    <ul>
+                        <li>Title: {{ film.title }}</li>
+                        <li>Director: {{ film.director.name }}</li>
+                        <li>Description: {{ film.description }}</li>
+                        <li>Genres:
+                            <ul>
+                                {% for genre in film.genres %}
+                                    <li>{{ genre.name }}</li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            {% endfor %}
+        </div>
+
         <h3>Search Film</h3>
 
         <form class="row mt-4" action="/" method="GET">

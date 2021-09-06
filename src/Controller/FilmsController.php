@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Director;
+use App\Entity\FeatureFilm;
 use App\Entity\Film;
 
 use App\Entity\Genre;
@@ -27,10 +28,19 @@ class FilmsController extends AbstractController
 
         $filmsReturned = $this->getDoctrine()->getRepository(Film::class)->findBySearch($search, $selectedGenre);
 
+        $featuredFilmIds = $this->getDoctrine()->getRepository(FeatureFilm::class)->findAll();
+
+        $featuredFilms = [];
+
+        foreach($featuredFilmIds as $film) {
+            $featuredFilms[] = $this->getDoctrine()->getRepository(Film::class)->find($film->getFilmId());
+        }
+
         $allGenres = $this->getDoctrine()->getRepository(Genre::class)->findAll();
 
         return $this->render('films/index.html.twig', [
             'films' => $filmsReturned,
+            'featured' => $featuredFilms,
             'genres' => $allGenres,
             'search' => $search,
             'selectedGenre' => $selectedGenre
