@@ -46,6 +46,7 @@ class FilmsController extends AbstractController
         return $this->render('films/index.html.twig', [
             'films' => $filmsReturned,
             'featured' => $featuredFilms,
+            'featuredOmdb' => $featuredFilmsOmdb,
             'genres' => $allGenres,
             'search' => $search,
             'selectedGenre' => $selectedGenre

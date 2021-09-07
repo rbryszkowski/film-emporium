@@ -34,14 +34,16 @@ class CreateFeatureFilm extends Command
 
         //get films
         $filmRepository = $this->entityManager->getRepository(Film::class)->findAll();
-        $featureFilmRepo = $this->entityManager->getRepository(FeatureFilm::class)->findAll();
 
-        //delete existing feature films
-        foreach ($featureFilmRepo as &$film) {
-            $this->entityManager->remove($film);
-            $this->entityManager->flush();
-        }
-        unset($film);
+        $this->entityManager->getRepository(FeatureFilm::class)->deleteAll();
+
+//        $featureFilmRepo = $this->entityManager->getRepository(FeatureFilm::class)->findAll();
+//
+//        //delete existing feature films
+//        foreach ($featureFilmRepo as $film) {
+//            $this->entityManager->remove($film);
+//            $this->entityManager->flush();
+//        }
 
         if (count($filmRepository) === 0) {
             $output->writeln('No films in repository!');
