@@ -29,6 +29,11 @@ deleteFilm:
   controller: App\Controller\FilmsController::deleteFilm
   methods: GET
 
+deleteAllFilms:
+  path: /films/clear
+  controller: App\Controller\FilmsController::deleteAllFilms
+  methods: GET
+
 deleteGenre:
   path: /genres/delete/{id}
   controller: App\Controller\GenresController::deleteGenre

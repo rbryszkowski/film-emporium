@@ -10,17 +10,27 @@
         <br>
 
         <div class="row">
-            {% for i in range(0, 2) %}
-                <div class="col">
-                    <a href="/films/details/{{ featured[i].id }}">
-                        <img class="film-img" src="{{ featuredOmdb[i].Poster }}">
-                        <p><b>{{ featured[i].title }}</b></p>
-                    </a>
-                </div>
-            {% endfor %}
+            {% if featured|length > 0 %}
+                {% for i in range(0, (featured|length - 1)) %}
+                    <div class="col">
+                        <a href="/films/details/{{ featured[i].id }}">
+                            {% if featuredOmdb[i].Response != 'False' %}
+                                <img class="film-img" src="{{ featuredOmdb[i].Poster }}">
+                            {% else %}
+                                <p>No Poster available</p>
+                            {% endif %}
+                            <p><b>{{ featured[i].title }}</b></p>
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No Feature Films to display!</p>
+            {% endif %}
         </div>
 
         <h3>Search Film</h3>
+
+        <a href="{{ path('deleteAllFilms') }}">Delete All Films</a>
 
         <form class="row mt-4" action="/" method="GET">
                 <div class="col">

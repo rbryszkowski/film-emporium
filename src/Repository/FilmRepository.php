@@ -59,6 +59,14 @@ class FilmRepository extends ServiceEntityRepository
 
     }
 
+    public function deleteAll()
+    {
+        $qb = $this->createQueryBuilder('films');
+
+        return $qb->delete()->getQuery()->getResult();
+
+    }
+
     // /**
     //  * @return Film[] Returns an array of Film objects
     //  */

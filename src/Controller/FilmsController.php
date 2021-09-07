@@ -34,20 +34,29 @@ class FilmsController extends AbstractController
         $featuredFilms = [];
         $featuredFilmsOmdb = [];
 
-        $i = 0;
-        foreach($featuredFilmIds as $film) {
-            $featuredFilms[] = $this->getDoctrine()->getRepository(Film::class)->find($film->getFilmId());
-            $featuredFilmsOmdb[] = $this->findFilmOnOmdb($featuredFilms[$i]->getTitle());
-            $i++;
+        $allFilms = $this->getDoctrine()->getRepository(Film::class)->findAll();
+
+        foreach($featuredFilmIds as $featuredId) {
+            $featuredFilm = $this->getDoctrine()->getRepository(Film::class)->find($featuredId->getFilmId());
+            if ($featuredFilm) {
+                $featuredFilms[] = $featuredFilm;
+            }
         }
 
-        $allGenres = $this->getDoctrine()->getRepository(Genre::class)->findAll();
+        foreach($featuredFilms as $featuredFilm) {
+            $featuredFilmsOmdb[] = $this->findFilmOnOmdb($featuredFilm->getTitle());
+        }
+
+        dump($featuredFilmsOmdb);
+
+
+        $genres = $this->getDoctrine()->getRepository(Genre::class)->findAll();
 
         return $this->render('films/index.html.twig', [
             'films' => $filmsReturned,
             'featured' => $featuredFilms,
             'featuredOmdb' => $featuredFilmsOmdb,
-            'genres' => $allGenres,
+            'genres' => $genres,
             'search' => $search,
             'selectedGenre' => $selectedGenre
         ]);
@@ -171,6 +180,16 @@ class FilmsController extends AbstractController
         }
 
         return $this->redirectToRoute('filmIndexPage');
+    }
+
+    public function deleteAllFilms() {
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->getRepository(Film::class)->deleteAll();
+        $entityManager->flush();
+
+        return $this->redirectToRoute('filmIndexPage');
+
     }
 
 }
