@@ -32,32 +32,32 @@ class CreateFeatureFilm extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
-        //get films
+        //get all films
         $filmRepository = $this->entityManager->getRepository(Film::class)->findAll();
 
+        //delete current feature films
         $this->entityManager->getRepository(FeatureFilm::class)->deleteAll();
-
-//        $featureFilmRepo = $this->entityManager->getRepository(FeatureFilm::class)->findAll();
-//
-//        //delete existing feature films
-//        foreach ($featureFilmRepo as $film) {
-//            $this->entityManager->remove($film);
-//            $this->entityManager->flush();
-//        }
 
         if (count($filmRepository) === 0) {
             $output->writeln('No films in repository!');
             return Command::FAILURE;
         }
 
+        $availableFilms = $filmRepository;
+
         //choose 3 new ones from random
         for ($i = 1; $i <= 3; $i++) {
-            $reposSize = count($filmRepository);
-            $chosenFilm = $filmRepository[random_int(0, $reposSize-1)];
+            //pick a film at random from available films
+            $reposSize = count($availableFilms);
+            $chosenFilm = $availableFilms[random_int(0, $reposSize-1)];
+            //Add film to FeatureFilms repo
             $featureFilm = new FeatureFilm();
             $featureFilm->setFilmId($chosenFilm->getId());
             $this->entityManager->persist($featureFilm);
             $this->entityManager->flush();
+            //delete the chosen film from available films to avoid duplication
+            $chosenFilmIndex = array_search($chosenFilm, $availableFilms, true);
+            array_splice($availableFilms, $chosenFilmIndex, 1);
         }
 
         $output->writeln('3 New Feature Films successfully created!');

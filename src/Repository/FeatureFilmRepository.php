@@ -19,26 +19,11 @@ class FeatureFilmRepository extends ServiceEntityRepository
         parent::__construct($registry, FeatureFilm::class);
     }
 
-    /**
-     * @return FeatureFilm[]
-     */
-    public function deleteAll(): array
+    public function deleteAll()
     {
+        $qb = $this->createQueryBuilder('films');
 
-//        $query = $this->_em->createQuery('DELETE App\Entity\FeatureFilm ff WHERE ff.id > 0');
-//        $query->execute();
-//        return $this->findAll();
-
-        $qb = $this->_em->createQueryBuilder();
-
-        $query = $qb
-            ->delete(FeatureFilm::class, 'ff')
-            ->where('ff.id > 0')
-            ;
-
-        dump($query->getQuery());
-
-        return $query->getQuery()->getResult();
+        return $qb->delete()->getQuery()->getResult();
 
     }
 
