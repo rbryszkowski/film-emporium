@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Film;
 use App\Entity\Genre;
 use App\Form\GenreType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -50,6 +51,20 @@ class GenresController extends AbstractController
             $em->remove($genre);
             $em->flush();
         }
+
+        return $this->redirectToRoute('manageGenresPage');
+    }
+
+    public function deleteAllGenres() {
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->getRepository(Genre::class)->deleteAll();
+        $entityManager->flush();
+
+//        //As films must have a genre(s), delete all films
+//        $entityManager = $this->getDoctrine()->getManager();
+//        $entityManager->getRepository(Film::class)->deleteAll();
+//        $entityManager->flush();
 
         return $this->redirectToRoute('manageGenresPage');
     }

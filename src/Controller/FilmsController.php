@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Director;
+use App\Entity\FeatureFilm;
 use App\Entity\Film;
 
 use App\Entity\Genre;
 use App\Form\FilmType;
 use GuzzleHttp\Client;
+use PhpParser\Node\Expr\Cast\Object_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,15 +29,56 @@ class FilmsController extends AbstractController
 
         $filmsReturned = $this->getDoctrine()->getRepository(Film::class)->findBySearch($search, $selectedGenre);
 
-        $allGenres = $this->getDoctrine()->getRepository(Genre::class)->findAll();
+        $featuredFilmIds = $this->getDoctrine()->getRepository(FeatureFilm::class)->findAll();
+
+        $featuredFilms = [];
+        $featuredFilmsOmdb = [];
+
+        $allFilms = $this->getDoctrine()->getRepository(Film::class)->findAll();
+
+        foreach($featuredFilmIds as $featuredId) {
+            $featuredFilm = $this->getDoctrine()->getRepository(Film::class)->find($featuredId->getFilmId());
+            if ($featuredFilm) {
+                $featuredFilms[] = $featuredFilm;
+            }
+        }
+
+        foreach($featuredFilms as $featuredFilm) {
+            $featuredFilmsOmdb[] = $this->findFilmOnOmdb($featuredFilm->getTitle());
+        }
+
+        dump($filmsReturned);
+
+
+        $genres = $this->getDoctrine()->getRepository(Genre::class)->findAll();
 
         return $this->render('films/index.html.twig', [
             'films' => $filmsReturned,
-            'genres' => $allGenres,
+            'featured' => $featuredFilms,
+            'featuredOmdb' => $featuredFilmsOmdb,
+            'genres' => $genres,
             'search' => $search,
             'selectedGenre' => $selectedGenre
         ]);
 
+    }
+
+    public function findFilmOnOmdb(string $title): Array
+    {
+        $client = new Client();
+
+        $params = http_build_query([
+            'apikey' => '34e585c5',
+            't' => $title
+        ]);
+
+        $url = 'http://www.omdbapi.com/?' . $params;
+
+        $response = $client->request('GET', $url);
+
+        $omdbData = json_decode($response->getBody(), true);
+
+        return $omdbData;
     }
 
     public function filmDetailsPage(int $id): Response
@@ -137,6 +180,16 @@ class FilmsController extends AbstractController
         }
 
         return $this->redirectToRoute('filmIndexPage');
+    }
+
+    public function deleteAllFilms() {
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->getRepository(Film::class)->deleteAll();
+        $entityManager->flush();
+
+        return $this->redirectToRoute('filmIndexPage');
+
     }
 
 }

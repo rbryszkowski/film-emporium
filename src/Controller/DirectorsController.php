@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Director;
+use App\Entity\Film;
 use App\Form\DirectorType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -52,6 +53,22 @@ class DirectorsController extends AbstractController
         }
 
         return $this->redirectToRoute('manageDirectorsPage');
+    }
+
+    public function deleteAllDirectors() {
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->getRepository(Director::class)->deleteAll();
+        $entityManager->flush();
+
+//        //As films must have a director, delete all films
+//        $entityManager = $this->getDoctrine()->getManager();
+//        $entityManager->getRepository(Film::class)->deleteAll();
+//        $entityManager->flush();
+
+        return $this->redirectToRoute('manageDirectorsPage');
+
+
     }
 
 

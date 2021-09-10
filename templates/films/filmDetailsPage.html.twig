@@ -6,10 +6,10 @@
         <div class="container-fluid py-5">
             <h1 class="display-5 fw-bold">{{ film.title }}</h1>
             <h4>{{  film.description }}</h4>
-            <p class="col-md-8 fs-4">Director: {{ film.director.name }}</p>
+            <p class="col-md-8 fs-4">Director: {{ film.director ? film.director.name : 'N/A' }}</p>
             <div class="row">
                 {% for genre in film.genres %}
-                    <h3 class="col-1"><span class="badge bg-secondary">{{  genre.name }}</span></h3>
+                    <h3 class="col"><span class="badge bg-secondary">{{  genre.name }}</span></h3>
                 {% endfor %}
             </div>
         </div>

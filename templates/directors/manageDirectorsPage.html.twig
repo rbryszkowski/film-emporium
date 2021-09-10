@@ -25,19 +25,23 @@
 
         <h3>Directors:</h3>
 
+        <a href="{{ path('deleteAllDirectors') }}">Delete All Directors</a>
+
         <hr/>
 
         {% if directors|length > 0 %}
             {% for director in directors  %}
-                <div class="row">
-                    <div class="col-9">
-                        <p>{{ director.name }}</p>
+                {% if director.name != 'N/A' %}
+                    <div class="row">
+                        <div class="col-9">
+                            <p>{{ director.name }}</p>
+                        </div>
+                        <div class="col-3">
+                            <a class="btn btn-primary" type="submit" href="/directors/delete/{{ director.id }}">Delete</a>
+                        </div>
                     </div>
-                    <div class="col-3">
-                        <a class="btn btn-primary" type="submit" href="/directors/delete/{{ director.id }}">Delete</a>
-                    </div>
-                </div>
-                <hr/>
+                    <hr/>
+                {% endif %}
             {% endfor %}
         {% else %}
             <p>No Directors, add some!</p>

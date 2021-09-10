@@ -2,10 +2,34 @@
 
 {% block body %}
 
-
     <div class="container">
 
+        <h3>Featured Films:</h3>
+
+        <br>
+
+        <div class="row">
+            {% if featured|length > 0 %}
+                {% for i in range(0, (featured|length - 1)) %}
+                    <div class="col">
+                        <a href="/films/details/{{ featured[i].id }}">
+                            {% if featuredOmdb[i].Response != 'False' %}
+                                <img class="film-img" src="{{ featuredOmdb[i].Poster }}">
+                            {% else %}
+                                <p>No Poster available</p>
+                            {% endif %}
+                            <p><b>{{ featured[i].title }}</b></p>
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No Feature Films to display!</p>
+            {% endif %}
+        </div>
+
         <h3>Search Film</h3>
+
+        <a href="{{ path('deleteAllFilms') }}">Delete All Films</a>
 
         <form class="row mt-4" action="/" method="GET">
                 <div class="col">
@@ -34,13 +58,12 @@
             {% for film in films  %}
                 <div class="row">
                     <div class="col-9">
-                        <p><b>Title:</b> {{ film.title }}  |  <b>Director:</b> {{ film.director ? film.director.name : '(No Director)' }}</p>
+                        <p><b>Title:</b> {{ film.title }}  |  <b>Director:</b>{{ film.director ? film.director.name : 'N/A' }}
+                        </p>
                     </div>
                     <div class="col-3">
                         <a class="btn btn-primary" type="submit" href="/films/update/{{ film.id }}">Update</a>
-                        &nbsp;&nbsp;
                         <a class="btn btn-primary" type="submit" href="/films/delete/{{ film.id }}">Delete</a>
-                        &nbsp;&nbsp;
                         <a class="btn btn-primary" type="submit" href="/films/details/{{ film.id }}">Details</a>
                     </div>
                 </div>
