@@ -9,8 +9,8 @@ class OmdbHttpRequest
 
     private $apikey;
 
-    public function __construct() {
-        $this->apikey = '34e585c5';
+    public function __construct(string $apikey) {
+        $this->apikey = $apikey;
     }
 
     public function getData(array $params)
