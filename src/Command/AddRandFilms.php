@@ -83,8 +83,6 @@ class AddRandFilms extends Command
             $this->entityManager->persist($film);
             $this->entityManager->flush();
 
-            dump($this->entityManager->getRepository(Film::class)->findOneBy(['title' => $randOmdbFilm['Title']]));
-
         }
 
         $output->writeln('10 new films successfully added!');
