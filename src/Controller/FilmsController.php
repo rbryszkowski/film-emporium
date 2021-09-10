@@ -8,6 +8,7 @@ use App\Entity\Film;
 
 use App\Entity\Genre;
 use App\Form\FilmType;
+use App\Service\OmdbHttpRequest;
 use GuzzleHttp\Client;
 use PhpParser\Node\Expr\Cast\Object_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -63,24 +64,6 @@ class FilmsController extends AbstractController
 
     }
 
-    public function findFilmOnOmdb(string $title): Array
-    {
-        $client = new Client();
-
-        $params = http_build_query([
-            'apikey' => '34e585c5',
-            't' => $title
-        ]);
-
-        $url = 'http://www.omdbapi.com/?' . $params;
-
-        $response = $client->request('GET', $url);
-
-        $omdbData = json_decode($response->getBody(), true);
-
-        return $omdbData;
-    }
-
     public function filmDetailsPage(int $id): Response
     {
         $em = $this->getDoctrine()->getManager();
@@ -91,24 +74,15 @@ class FilmsController extends AbstractController
             throw $this->createNotFoundException('The film does not exist');
         }
 
-        $client = new Client();
+        $omdb = new OmdbHttpRequest();
+        $omdbResponse = $omdb->getData(['t' => $film->getTitle()]);
+        $omdbStatus = $omdbResponse->getStatusCode();
+        $omdbFilmData = $omdb->getFilm(['t' => $film->getTitle()]);
 
-        $params = http_build_query([
-            'apikey' => '34e585c5',
-            't' => $film->getTitle()
-        ]);
-
-        $url = 'http://www.omdbapi.com/?' . $params;
-
-        $response = $client->request('GET', $url);
-
-        $omdbStatus = $response->getStatusCode();
-
-        $omdbData = json_decode($response->getBody(), true);
 
         return $this->render('films/filmDetailsPage.html.twig', [
             'film' => $film,
-            'omdbData' => $omdbData,
+            'omdbData' => $omdbFilmData,
             'statusCode' => $omdbStatus
         ]);
     }

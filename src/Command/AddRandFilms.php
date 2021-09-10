@@ -5,6 +5,7 @@ namespace App\Command;
 use App\Entity\Director;
 use App\Entity\Film;
 use App\Entity\Genre;
+use App\Service\OmdbHttpRequest;
 use Doctrine\ORM\Mapping\Entity;
 use GuzzleHttp\Client;
 use PhpParser\Error;
@@ -101,33 +102,13 @@ class AddRandFilms extends Command
     }
 
     private function getRandOmdbFilm() {
-        $client = new Client();
 
-        //IMDB id is a 7 digit number prefixed with 'tt' (between 0 and 2155529)
-        $randImdbId = 'tt' . $this->pad(random_int(0, 2155529), 7);
+//        IMDB id is a 7 digit number prefixed with 'tt' (between 0 and 2155529)
+        $randOmdbId = 'tt' . str_pad('' . random_int(0, 2155529), 7, '0', STR_PAD_LEFT);
 
-        $params = http_build_query([
-            'apikey' => '34e585c5',
-            'i' => $randImdbId
-        ]);
+        $omdb = new OmdbHttpRequest();
+        return $omdb->getFilm(['i' => $randOmdbId]);
 
-        $url = 'http://www.omdbapi.com/?' . $params;
-
-        $response = $client->request('GET', $url);
-
-        $omdbData = json_decode($response->getBody(), true);
-
-        return $omdbData;
     }
-
-    private function pad($number, $length) :string
-    {
-        $str = '' . $number;
-        while(strlen($str) < $length) {
-            $str = '0' . $str;
-        }
-        return $str;
-    }
-
 
 }
