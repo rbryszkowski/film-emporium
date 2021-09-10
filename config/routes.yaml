@@ -34,15 +34,26 @@ deleteAllFilms:
   controller: App\Controller\FilmsController::deleteAllFilms
   methods: GET
 
+deleteAllGenres:
+  path: /genres/clear
+  controller: App\Controller\GenresController::deleteAllGenres
+  methods: GET
+
 deleteGenre:
   path: /genres/delete/{id}
   controller: App\Controller\GenresController::deleteGenre
+  methods: GET
+
+deleteAllDirectors:
+  path: /directors/clear
+  controller: App\Controller\DirectorsController::deleteAllDirectors
   methods: GET
 
 deleteDirector:
   path: /directors/delete/{id}
   controller: App\Controller\DirectorsController::deleteDirector
   methods: GET
+
 
 
 

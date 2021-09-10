@@ -19,6 +19,14 @@ class GenreRepository extends ServiceEntityRepository
         parent::__construct($registry, Genre::class);
     }
 
+    public function deleteAll()
+    {
+        $qb = $this->createQueryBuilder('genres');
+
+        return $qb->delete()->getQuery()->getResult();
+
+    }
+
     // /**
     //  * @return Genre[] Returns an array of Genre objects
     //  */

@@ -19,6 +19,14 @@ class DirectorRepository extends ServiceEntityRepository
         parent::__construct($registry, Director::class);
     }
 
+    public function deleteAll()
+    {
+        $qb = $this->createQueryBuilder('directors');
+
+        return $qb->delete()->getQuery()->getResult();
+
+    }
+
     // /**
     //  * @return Director[] Returns an array of Director objects
     //  */

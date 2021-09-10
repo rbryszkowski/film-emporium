@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use App\Repository\FilmRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\ManyToMany;
+use Doctrine\ORM\Mapping\OneToOne;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -37,6 +37,11 @@ class Film
      * @ORM\ManyToOne(targetEntity="Director", inversedBy="films")
      */
     private $director;
+
+    /**
+     * @OneToOne(targetEntity="FeatureFilm", inversedBy = "filmId")
+     */
+    private $featureFilm;
 
     public function getDirector(): ?Director
     {

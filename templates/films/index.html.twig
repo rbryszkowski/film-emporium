@@ -59,13 +59,12 @@
             {% for film in films  %}
                 <div class="row">
                     <div class="col-9">
-                        <p><b>Title:</b> {{ film.title }}  |  <b>Director:</b> {{ film.director ? film.director.name : '(No Director)' }}</p>
+                        <p><b>Title:</b> {{ film.title }}  |  <b>Director:</b>{{ film.director ? film.director.name : 'N/A' }}
+                        </p>
                     </div>
                     <div class="col-3">
                         <a class="btn btn-primary" type="submit" href="/films/update/{{ film.id }}">Update</a>
-                        &nbsp;&nbsp;
                         <a class="btn btn-primary" type="submit" href="/films/delete/{{ film.id }}">Delete</a>
-                        &nbsp;&nbsp;
                         <a class="btn btn-primary" type="submit" href="/films/details/{{ film.id }}">Details</a>
                     </div>
                 </div>

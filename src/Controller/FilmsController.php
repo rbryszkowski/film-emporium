@@ -47,7 +47,7 @@ class FilmsController extends AbstractController
             $featuredFilmsOmdb[] = $this->findFilmOnOmdb($featuredFilm->getTitle());
         }
 
-        dump($featuredFilmsOmdb);
+        dump($filmsReturned);
 
 
         $genres = $this->getDoctrine()->getRepository(Genre::class)->findAll();

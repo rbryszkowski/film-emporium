@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\FeatureFilmRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\OneToOne;
 
 /**
  * @ORM\Entity(repositoryClass=FeatureFilmRepository::class)
@@ -19,6 +21,7 @@ class FeatureFilm
 
     /**
      * @ORM\Column(type="integer", length=255)
+     * @OneToOne(targetEntity="Film", mappedBy = "id")
      */
     private $filmId;
 

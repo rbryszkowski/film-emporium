@@ -24,6 +24,7 @@ class FilmRepository extends ServiceEntityRepository
     /**
      * @return Film[]
      */
+
     public function findBySearch(string $searchTerm, string $genre): array
     {
 
@@ -45,7 +46,7 @@ class FilmRepository extends ServiceEntityRepository
             )
             ->setParameter('search', '%' . $searchTerm . '%');
 
-        if ($genre !== '')
+        if ($genre)
         {
             $qb
                 ->andWhere(
@@ -54,6 +55,8 @@ class FilmRepository extends ServiceEntityRepository
                 ->setParameter('genre', $genre)
             ;
         }
+
+        dump($query->getQuery());
 
         return $query->getQuery()->getResult();
 
