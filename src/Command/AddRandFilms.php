@@ -23,11 +23,16 @@ class AddRandFilms extends Command
     protected static $defaultName = 'app:add-films';
 
     private $entityManager;
+    /**
+     * @var OmdbHttpRequest
+     */
+    private $omdbReq;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, OmdbHttpRequest $omdbReq)
     {
         $this->entityManager = $em;
         parent::__construct();
+        $this->omdbReq = $omdbReq;
     }
 
     protected function configure(): void
@@ -106,8 +111,7 @@ class AddRandFilms extends Command
 //        IMDB id is a 7 digit number prefixed with 'tt' (between 0 and 2155529)
         $randOmdbId = 'tt' . str_pad('' . random_int(0, 2155529), 7, '0', STR_PAD_LEFT);
 
-        $omdb = new OmdbHttpRequest();
-        return $omdb->getFilm(['i' => $randOmdbId]);
+        return $this->omdbReq->getFilm(['i' => $randOmdbId]);
 
     }
 

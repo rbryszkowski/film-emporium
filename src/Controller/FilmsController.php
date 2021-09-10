@@ -64,7 +64,7 @@ class FilmsController extends AbstractController
 
     }
 
-    public function filmDetailsPage(int $id): Response
+    public function filmDetailsPage(int $id, OmdbHttpRequest $omdbReq): Response
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -74,10 +74,9 @@ class FilmsController extends AbstractController
             throw $this->createNotFoundException('The film does not exist');
         }
 
-        $omdb = new OmdbHttpRequest();
-        $omdbResponse = $omdb->getData(['t' => $film->getTitle()]);
+        $omdbResponse = $omdbReq->getData(['t' => $film->getTitle()]);
         $omdbStatus = $omdbResponse->getStatusCode();
-        $omdbFilmData = $omdb->getFilm(['t' => $film->getTitle()]);
+        $omdbFilmData = $omdbReq->getFilm(['t' => $film->getTitle()]);
 
 
         return $this->render('films/filmDetailsPage.html.twig', [
