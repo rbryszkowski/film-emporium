@@ -30,16 +30,8 @@ class OmdbHttpRequest
     public function getFilm(array $params)
     {
 
-        $params['apikey'] = $this->apikey;
+        $response = $this->getData($params);
+        return json_decode($response->getBody(), true);
 
-        $urlParams = http_build_query($params);
-        $url = 'http://www.omdbapi.com/?' . $urlParams;
-
-        $client = new Client();
-        $response = $client->request('GET', $url);
-
-        $omdbData = json_decode($response->getBody(), true);
-
-        return $omdbData;
     }
 }
