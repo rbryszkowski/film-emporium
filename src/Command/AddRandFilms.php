@@ -5,6 +5,7 @@ namespace App\Command;
 use App\Entity\Director;
 use App\Entity\Film;
 use App\Entity\Genre;
+use App\Exceptions\FilmNotFoundException;
 use App\Service\OmdbHttpRequest;
 use Doctrine\ORM\Mapping\Entity;
 use GuzzleHttp\Client;
@@ -51,7 +52,7 @@ class AddRandFilms extends Command
             do {
                 $output->writeln('searching OMDB...');
                 $randOmdbFilm = $this->getRandOmdbFilm();
-            } while( !$randOmdbFilm->getSuccess() || $randOmdbFilm->getType() !== 'movie' || $this->entityManager->getRepository(Film::class)->findOneBy(['title' => $randOmdbFilm->getTitle()]) );
+            } while( !$randOmdbFilm || $randOmdbFilm->getType() !== 'movie' || $this->entityManager->getRepository(Film::class)->findOneBy(['title' => $randOmdbFilm->getTitle()]) );
 
             $output->writeln('found film with title: ' . $randOmdbFilm->getTitle());
 
@@ -111,7 +112,13 @@ class AddRandFilms extends Command
 //        IMDB id is a 7 digit number prefixed with 'tt' (between 0 and 2155529)
         $randOmdbId = 'tt' . str_pad('' . random_int(0, 2155529), 7, '0', STR_PAD_LEFT);
 
-        return $this->omdbReq->getFilm(['i' => $randOmdbId]);
+        try {
+            $result = $this->omdbReq->getFilm(['i' => $randOmdbId]);
+        } catch(FilmNotFoundException $e) {
+            $result = null;
+        }
+
+        return $result;
 
     }
 

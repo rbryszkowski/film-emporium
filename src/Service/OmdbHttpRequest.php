@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Exceptions\FilmNotFoundException;
 use App\Models\FilmResponse;
 use GuzzleHttp\Client;
 
@@ -23,8 +24,13 @@ class OmdbHttpRequest
 
         $client = new Client();
         $response = $client->request('GET', $url);
+        $responseBody = json_decode($response->getBody(), true);
 
-        return new FilmResponse($response);
+        if ($responseBody['Response'] === 'False' || $response->getStatusCode() !== 200) {
+            throw new FilmNotFoundException('Film not found!');
+        }
+
+        return new FilmResponse($responseBody);
 
     }
 

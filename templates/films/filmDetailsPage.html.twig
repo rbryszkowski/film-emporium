@@ -25,7 +25,7 @@
                 </h2>
                 <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
-                        {% if omdbData.success == false %}
+                        {% if omdbData == null %}
                             <h3>Could not find details for this film!</h3>
                         {% else %}
                             <div class="row">

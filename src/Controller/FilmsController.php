@@ -5,8 +5,8 @@ namespace App\Controller;
 use App\Entity\Director;
 use App\Entity\FeatureFilm;
 use App\Entity\Film;
-
 use App\Entity\Genre;
+use App\Exceptions\FilmNotFoundException;
 use App\Form\FilmType;
 use App\Service\OmdbHttpRequest;
 use GuzzleHttp\Client;
@@ -45,7 +45,11 @@ class FilmsController extends AbstractController
         }
 
         foreach($featuredFilms as $featuredFilm) {
-            $featuredFilmsOmdb[] = $omdbReq->getFilm(['t' => $featuredFilm->getTitle()]);
+            try {
+                $featuredFilmsOmdb[] = $omdbReq->getFilm(['t' => $featuredFilm->getTitle()]);
+            } catch(FilmNotFoundException $e) {
+                $featuredFilmsOmdb[] = null;
+            }
         }
 
         $genres = $this->getDoctrine()->getRepository(Genre::class)->findAll();
@@ -71,7 +75,11 @@ class FilmsController extends AbstractController
             throw $this->createNotFoundException('The film does not exist');
         }
 
-        $omdbFilmData = $omdbReq->getFilm(['t' => $film->getTitle()]);
+        try {
+            $omdbFilmData = $omdbReq->getFilm(['t' => $film->getTitle()]);
+        } catch(FilmNotFoundException $e) {
+            $omdbFilmData = null;
+        }
 
         return $this->render('films/filmDetailsPage.html.twig', [
             'film' => $film,
