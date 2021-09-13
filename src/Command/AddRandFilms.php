@@ -95,6 +95,7 @@ class AddRandFilms extends Command
         $output->writeln('10 new films successfully added!');
 
         return Command::SUCCESS;
+
     }
 
     private function getRandWord() {
