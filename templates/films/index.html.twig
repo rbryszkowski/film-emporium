@@ -14,7 +14,7 @@
                     <div class="col">
                         <a href="/films/details/{{ featured[i].id }}">
                             {% if featuredOmdb[i].success == true %}
-                                <img class="film-img" src="{{ featuredOmdb[i].Poster }}">
+                                <img class="film-img" src="{{ featuredOmdb[i].poster }}">
                             {% else %}
                                 <p>No Poster available</p>
                             {% endif %}
