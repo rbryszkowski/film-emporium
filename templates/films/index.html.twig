@@ -13,7 +13,7 @@
                 {% for i in range(0, (featured|length - 1)) %}
                     <div class="col">
                         <a href="/films/details/{{ featured[i].id }}">
-                            {% if featuredOmdb[i].Response != 'False' %}
+                            {% if featuredOmdb[i].success == true %}
                                 <img class="film-img" src="{{ featuredOmdb[i].Poster }}">
                             {% else %}
                                 <p>No Poster available</p>

@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Models\FilmResponse;
 use GuzzleHttp\Client;
 
 class OmdbHttpRequest
@@ -13,9 +14,8 @@ class OmdbHttpRequest
         $this->apikey = $apikey;
     }
 
-    public function getData(array $params)
+    public function getFilm(array $params)
     {
-
         $params['apikey'] = $this->apikey;
 
         $urlParams = http_build_query($params);
@@ -24,14 +24,8 @@ class OmdbHttpRequest
         $client = new Client();
         $response = $client->request('GET', $url);
 
-        return $response;
-    }
-
-    public function getFilm(array $params)
-    {
-
-        $response = $this->getData($params);
-        return json_decode($response->getBody(), true);
+        return new FilmResponse($response);
 
     }
+
 }

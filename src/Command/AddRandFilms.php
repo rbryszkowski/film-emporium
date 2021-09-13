@@ -51,17 +51,17 @@ class AddRandFilms extends Command
             do {
                 $output->writeln('searching OMDB...');
                 $randOmdbFilm = $this->getRandOmdbFilm();
-            } while( $randOmdbFilm['Response'] === 'False' || $randOmdbFilm['Type'] !== 'movie' || $this->entityManager->getRepository(Film::class)->findOneBy(['title' => $randOmdbFilm['Title']]) );
+            } while( !$randOmdbFilm->getSuccess() || $randOmdbFilm->getType() !== 'movie' || $this->entityManager->getRepository(Film::class)->findOneBy(['title' => $randOmdbFilm->getTitle()]) );
 
-            $output->writeln('found film with title: ' . $randOmdbFilm['Title']);
+            $output->writeln('found film with title: ' . $randOmdbFilm->getTitle());
 
             $film = new Film();
-            $film->setTitle($randOmdbFilm['Title']);
-            $film->setDescription($randOmdbFilm['Plot']);
+            $film->setTitle($randOmdbFilm->getTitle());
+            $film->setDescription($randOmdbFilm->getPlot());
 
-            if ($randOmdbFilm['Genre'] !== 'N/A') {
+            if ($randOmdbFilm->getGenre() !== 'N/A') {
                 //turn genres string into an array of Genre objects
-                $omdbGenreArr = explode(',', $randOmdbFilm['Genre']);
+                $omdbGenreArr = explode(',', $randOmdbFilm->getGenre());
                 $genres = [];
                 foreach($omdbGenreArr as &$omdbGenre) {
                     $omdbGenre = trim($omdbGenre);
@@ -79,9 +79,9 @@ class AddRandFilms extends Command
                 $film->setGenres($genres);
             }
 
-            if ( !$director = $this->entityManager->getRepository(Director::class)->findOneBy(['name' => $randOmdbFilm['Director']]) ) {
+            if ( !$director = $this->entityManager->getRepository(Director::class)->findOneBy(['name' => $randOmdbFilm->getDirector()]) ) {
                 $director = new Director();
-                $director->setName($randOmdbFilm['Director']);
+                $director->setName($randOmdbFilm->getDirector());
                 $this->entityManager->persist($director);
             }
             $film->setDirector($director);
@@ -96,7 +96,7 @@ class AddRandFilms extends Command
         return Command::SUCCESS;
     }
 
-    private function returnRandWord() {
+    private function getRandWord() {
 
         $filePath = 'Resources/englishDictionary.txt';
         $fileAsArr = file($filePath);

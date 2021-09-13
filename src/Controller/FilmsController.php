@@ -21,7 +21,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class FilmsController extends AbstractController
 {
 
-    public function filmIndexPage(Request $request): Response
+    public function filmIndexPage(Request $request, OmdbHttpRequest $omdbReq): Response
     {
 
         $search = $request->get('search', '');
@@ -45,11 +45,8 @@ class FilmsController extends AbstractController
         }
 
         foreach($featuredFilms as $featuredFilm) {
-            $featuredFilmsOmdb[] = $this->findFilmOnOmdb($featuredFilm->getTitle());
+            $featuredFilmsOmdb[] = $omdbReq->getFilm(['t' => $featuredFilm->getTitle()]);
         }
-
-        dump($filmsReturned);
-
 
         $genres = $this->getDoctrine()->getRepository(Genre::class)->findAll();
 
@@ -74,15 +71,11 @@ class FilmsController extends AbstractController
             throw $this->createNotFoundException('The film does not exist');
         }
 
-        $omdbResponse = $omdbReq->getData(['t' => $film->getTitle()]);
-        $omdbStatus = $omdbResponse->getStatusCode();
         $omdbFilmData = $omdbReq->getFilm(['t' => $film->getTitle()]);
-
 
         return $this->render('films/filmDetailsPage.html.twig', [
             'film' => $film,
-            'omdbData' => $omdbFilmData,
-            'statusCode' => $omdbStatus
+            'omdbData' => $omdbFilmData
         ]);
     }
 
