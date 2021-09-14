@@ -5,9 +5,10 @@ namespace App\Controller;
 use App\Entity\Director;
 use App\Entity\FeatureFilm;
 use App\Entity\Film;
-
 use App\Entity\Genre;
+use App\Exceptions\FilmNotFoundException;
 use App\Form\FilmType;
+use App\Service\OmdbHttpRequest;
 use GuzzleHttp\Client;
 use PhpParser\Node\Expr\Cast\Object_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,7 +21,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class FilmsController extends AbstractController
 {
 
-    public function filmIndexPage(Request $request): Response
+    public function filmIndexPage(Request $request, OmdbHttpRequest $omdbReq): Response
     {
 
         $search = $request->get('search', '');
@@ -44,11 +45,12 @@ class FilmsController extends AbstractController
         }
 
         foreach($featuredFilms as $featuredFilm) {
-            $featuredFilmsOmdb[] = $this->findFilmOnOmdb($featuredFilm->getTitle());
+            try {
+                $featuredFilmsOmdb[] = $omdbReq->getFilm(['t' => $featuredFilm->getTitle()]);
+            } catch(FilmNotFoundException $e) {
+                $featuredFilmsOmdb[] = null;
+            }
         }
-
-        dump($filmsReturned);
-
 
         $genres = $this->getDoctrine()->getRepository(Genre::class)->findAll();
 
@@ -63,25 +65,7 @@ class FilmsController extends AbstractController
 
     }
 
-    public function findFilmOnOmdb(string $title): Array
-    {
-        $client = new Client();
-
-        $params = http_build_query([
-            'apikey' => '34e585c5',
-            't' => $title
-        ]);
-
-        $url = 'http://www.omdbapi.com/?' . $params;
-
-        $response = $client->request('GET', $url);
-
-        $omdbData = json_decode($response->getBody(), true);
-
-        return $omdbData;
-    }
-
-    public function filmDetailsPage(int $id): Response
+    public function filmDetailsPage(int $id, OmdbHttpRequest $omdbReq): Response
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -91,25 +75,15 @@ class FilmsController extends AbstractController
             throw $this->createNotFoundException('The film does not exist');
         }
 
-        $client = new Client();
-
-        $params = http_build_query([
-            'apikey' => '34e585c5',
-            't' => $film->getTitle()
-        ]);
-
-        $url = 'http://www.omdbapi.com/?' . $params;
-
-        $response = $client->request('GET', $url);
-
-        $omdbStatus = $response->getStatusCode();
-
-        $omdbData = json_decode($response->getBody(), true);
+        try {
+            $omdbFilmData = $omdbReq->getFilm(['t' => $film->getTitle()]);
+        } catch(FilmNotFoundException $e) {
+            $omdbFilmData = null;
+        }
 
         return $this->render('films/filmDetailsPage.html.twig', [
             'film' => $film,
-            'omdbData' => $omdbData,
-            'statusCode' => $omdbStatus
+            'omdbData' => $omdbFilmData
         ]);
     }
 

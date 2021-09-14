@@ -5,6 +5,8 @@ namespace App\Command;
 use App\Entity\Director;
 use App\Entity\Film;
 use App\Entity\Genre;
+use App\Exceptions\FilmNotFoundException;
+use App\Service\OmdbHttpRequest;
 use Doctrine\ORM\Mapping\Entity;
 use GuzzleHttp\Client;
 use PhpParser\Error;
@@ -22,11 +24,16 @@ class AddRandFilms extends Command
     protected static $defaultName = 'app:add-films';
 
     private $entityManager;
+    /**
+     * @var OmdbHttpRequest
+     */
+    private $omdbReq;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, OmdbHttpRequest $omdbReq)
     {
         $this->entityManager = $em;
         parent::__construct();
+        $this->omdbReq = $omdbReq;
     }
 
     protected function configure(): void
@@ -45,17 +52,17 @@ class AddRandFilms extends Command
             do {
                 $output->writeln('searching OMDB...');
                 $randOmdbFilm = $this->getRandOmdbFilm();
-            } while( $randOmdbFilm['Response'] === 'False' || $randOmdbFilm['Type'] !== 'movie' || $this->entityManager->getRepository(Film::class)->findOneBy(['title' => $randOmdbFilm['Title']]) );
+            } while( !$randOmdbFilm || $randOmdbFilm->getType() !== 'movie' || $this->entityManager->getRepository(Film::class)->findOneBy(['title' => $randOmdbFilm->getTitle()]) );
 
-            $output->writeln('found film with title: ' . $randOmdbFilm['Title']);
+            $output->writeln('found film with title: ' . $randOmdbFilm->getTitle());
 
             $film = new Film();
-            $film->setTitle($randOmdbFilm['Title']);
-            $film->setDescription($randOmdbFilm['Plot']);
+            $film->setTitle($randOmdbFilm->getTitle());
+            $film->setDescription($randOmdbFilm->getPlot());
 
-            if ($randOmdbFilm['Genre'] !== 'N/A') {
+            if ($randOmdbFilm->getGenre() !== 'N/A') {
                 //turn genres string into an array of Genre objects
-                $omdbGenreArr = explode(',', $randOmdbFilm['Genre']);
+                $omdbGenreArr = explode(',', $randOmdbFilm->getGenre());
                 $genres = [];
                 foreach($omdbGenreArr as &$omdbGenre) {
                     $omdbGenre = trim($omdbGenre);
@@ -73,9 +80,9 @@ class AddRandFilms extends Command
                 $film->setGenres($genres);
             }
 
-            if ( !$director = $this->entityManager->getRepository(Director::class)->findOneBy(['name' => $randOmdbFilm['Director']]) ) {
+            if ( !$director = $this->entityManager->getRepository(Director::class)->findOneBy(['name' => $randOmdbFilm->getDirector()]) ) {
                 $director = new Director();
-                $director->setName($randOmdbFilm['Director']);
+                $director->setName($randOmdbFilm->getDirector());
                 $this->entityManager->persist($director);
             }
             $film->setDirector($director);
@@ -88,9 +95,10 @@ class AddRandFilms extends Command
         $output->writeln('10 new films successfully added!');
 
         return Command::SUCCESS;
+
     }
 
-    private function returnRandWord() {
+    private function getRandWord() {
 
         $filePath = 'Resources/englishDictionary.txt';
         $fileAsArr = file($filePath);
@@ -101,33 +109,18 @@ class AddRandFilms extends Command
     }
 
     private function getRandOmdbFilm() {
-        $client = new Client();
 
-        //IMDB id is a 7 digit number prefixed with 'tt' (between 0 and 2155529)
-        $randImdbId = 'tt' . $this->pad(random_int(0, 2155529), 7);
+//        IMDB id is a 7 digit number prefixed with 'tt' (between 0 and 2155529)
+        $randOmdbId = 'tt' . str_pad('' . random_int(0, 2155529), 7, '0', STR_PAD_LEFT);
 
-        $params = http_build_query([
-            'apikey' => '34e585c5',
-            'i' => $randImdbId
-        ]);
-
-        $url = 'http://www.omdbapi.com/?' . $params;
-
-        $response = $client->request('GET', $url);
-
-        $omdbData = json_decode($response->getBody(), true);
-
-        return $omdbData;
-    }
-
-    private function pad($number, $length) :string
-    {
-        $str = '' . $number;
-        while(strlen($str) < $length) {
-            $str = '0' . $str;
+        try {
+            $result = $this->omdbReq->getFilm(['i' => $randOmdbId]);
+        } catch(FilmNotFoundException $e) {
+            $result = null;
         }
-        return $str;
-    }
 
+        return $result;
+
+    }
 
 }

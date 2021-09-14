@@ -5,7 +5,7 @@
     <div class="container">
         <div class="container-fluid py-5">
             <h1 class="display-5 fw-bold">{{ film.title }}</h1>
-            <h4>{{  film.description }}</h4>
+            <h4>{{  film.description != 'N/A' ? film.description : '' }}</h4>
             <p class="col-md-8 fs-4">Director: {{ film.director ? film.director.name : 'N/A' }}</p>
             <div class="row">
                 {% for genre in film.genres %}
@@ -25,40 +25,40 @@
                 </h2>
                 <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
-                        {% if statusCode != 200 or omdbData.Response != 'True' %}
+                        {% if omdbData == null %}
                             <h3>Could not find details for this film!</h3>
                         {% else %}
                             <div class="row">
                                 <div class="col-3">
-                                    <img class="film-img" src="{{ omdbData.Poster }}">
+                                    <img class="film-img" src="{{ omdbData.poster }}" alt="No poster available">
                                 </div>
                                 <div class="col-8">
                                     <div class="row">
-                                        Plot: {{ omdbData.Plot }}
+                                        Plot: {{ omdbData.plot }}
                                         <hr>
                                     </div>
                                     <div class="row">
-                                        Director: {{ omdbData.Director }}
+                                        Director: {{ omdbData.director }}
                                         <hr>
                                     </div>
                                     <div class="row">
-                                        Writer: {{ omdbData.Writer }}
+                                        Writer: {{ omdbData.writer }}
                                         <hr>
                                     </div>
                                     <div class="row">
-                                        Rated: {{ omdbData.Rated }}
+                                        Rated: {{ omdbData.rated }}
                                         <hr>
                                     </div>
                                     <div class="row">
-                                        Year: {{ omdbData.Year }}
+                                        Year: {{ omdbData.year }}
                                         <hr>
                                     </div>
                                     <div class="row">
-                                        Runtime: {{ omdbData.Runtime }}
+                                        Runtime: {{ omdbData.runtime }}
                                         <hr>
                                     </div>
                                     <div class="row">
-                                        {% set omdbGenres = omdbData.Genre|split(',') %}
+                                        {% set omdbGenres = omdbData.genre|split(',') %}
                                         {% for genre in omdbGenres %}
                                             {% set genre = genre|trim %}
                                         {% endfor %}
@@ -72,7 +72,7 @@
                                     <div class="row">
                                         <p>Ratings:</p>
                                         <ul>
-                                            {% for rating in omdbData.Ratings %}
+                                            {% for rating in omdbData.ratings %}
                                                 <li>{{ rating.Source }} : {{ rating.Value }}</li>
                                             {% endfor %}
                                         </ul>
