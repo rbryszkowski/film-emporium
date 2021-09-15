@@ -24,7 +24,9 @@ class OmdbHttpRequest
 
     public function __construct(string $apikey, Client $client=null) {
 
-        $this->url = 'http://www.omdbapi.com/?';
+//        $this->url = 'http://www.omdbapi.com/?';
+
+        $this->url = 'http://www.jhgeergjhwgfj.com/?';
 
         $this->apikey = $apikey;
 
