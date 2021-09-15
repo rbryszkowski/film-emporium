@@ -9,29 +9,59 @@ use GuzzleHttp\Client;
 class OmdbHttpRequest
 {
 
+    /**
+     * @var string
+     */
+    private $url;
+    /**
+     * @var Client
+     */
+    private $client;
+    /**
+     * @var string
+     */
     private $apikey;
 
-    public function __construct(string $apikey) {
+    public function __construct(string $apikey, Client $client=null) {
+
+        $this->url = 'http://www.omdbapi.com/?';
+
         $this->apikey = $apikey;
+
+        if ($client !== null)
+        {
+            $this->client = $client;
+        }
+        else
+        {
+            $this->client = new Client();
+        }
+
     }
 
-    public function getFilm(array $params)
+    public function getFilm(string $filmTitle)
     {
+
+        if ( !$filmTitle || !preg_match("/\S/", $filmTitle) ) {
+            throw new \InvalidArgumentException('Argument must be a valid film title of type string!');
+        }
+
         $params['apikey'] = $this->apikey;
+        $params['t'] = $filmTitle;
 
         $urlParams = http_build_query($params);
-        $url = 'http://www.omdbapi.com/?' . $urlParams;
+        $response = $this->client->request('GET', $this->url . $urlParams);
 
-        $client = new Client();
-        $response = $client->request('GET', $url);
-        $responseBody = json_decode($response->getBody(), true);
-
-        if ($responseBody['Response'] === 'False' || $response->getStatusCode() !== 200) {
+        if($response->getStatusCode() !== 200) {
             throw new FilmNotFoundException('Film not found!');
         }
+
+        $responseBody = json_decode($response->getBody(), true);
 
         return new FilmResponse($responseBody);
 
     }
+
+
 
 }
