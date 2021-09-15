@@ -41,17 +41,22 @@ class OmdbHttpRequest
 
     public function getFilm(string $filmTitle)
     {
+
+        if ( !$filmTitle || !preg_match("/\S/", $filmTitle) ) {
+            throw new \InvalidArgumentException('Argument must be a valid film title of type string!');
+        }
+
         $params['apikey'] = $this->apikey;
         $params['t'] = $filmTitle;
 
         $urlParams = http_build_query($params);
         $response = $this->client->request('GET', $this->url . $urlParams);
 
-        $responseBody = json_decode($response->getBody(), true);
-
         if($response->getStatusCode() !== 200) {
             throw new FilmNotFoundException('Film not found!');
         }
+
+        $responseBody = json_decode($response->getBody(), true);
 
         return new FilmResponse($responseBody);
 

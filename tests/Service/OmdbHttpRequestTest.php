@@ -12,6 +12,7 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
@@ -30,7 +31,7 @@ class OmdbHttpRequestTest extends TestCase
 
         $omdbreq = new OmdbHttpRequest('34e585c5', $client);
 
-        $result = $omdbreq->getFilm('');
+        $result = $omdbreq->getFilm('bla');
 
         $this->assertEquals(null, $result->getTitle());
         $this->assertEquals(null, $result->getPlot());
@@ -74,7 +75,7 @@ class OmdbHttpRequestTest extends TestCase
 
         $omdbreq = new OmdbHttpRequest('34e585c5', $client);
 
-        $result = $omdbreq->getFilm('');
+        $result = $omdbreq->getFilm('bla');
 
         $this->assertEquals('title', $result->getTitle());
         $this->assertEquals('plot', $result->getPlot());
@@ -123,6 +124,25 @@ class OmdbHttpRequestTest extends TestCase
         $omdbreq = new OmdbHttpRequest('34e585c5', $client);
 
         $result = $omdbreq->getFilm('blablabla');
+
+    }
+
+    public function testOmdbThrowsInvalidArgumentExceptionWhenAnEmptyStringIsGiven(): void
+    {
+
+        $this->expectException(\InvalidArgumentException::class);
+
+        $mockHandler = new MockHandler([
+            new Response(200, [], null)
+        ]);
+
+        $handlerStack = HandlerStack::create($mockHandler);
+
+        $client = new Client(['handler' => $handlerStack]);
+
+        $omdbreq = new OmdbHttpRequest('34e585c5', $client);
+
+        $result = $omdbreq->getFilm('');
 
     }
 
