@@ -19,17 +19,20 @@ class FilmResponse
 
     public function __construct($responseBody) {
 
-        $this->type = $responseBody['Type'];
-        $this->title = $responseBody['Title'];
-        $this->genre = $responseBody['Genre'];
-        $this->director = $responseBody['Director'];
-        $this->writer = $responseBody['Writer'];
-        $this->plot = $responseBody['Plot'];
-        $this->rated = $responseBody['Rated'];
-        $this->year = $responseBody['Year'];
-        $this->runtime = $responseBody['Runtime'];
-        $this->ratings = $responseBody['Ratings'];
-        $this->poster = $responseBody['Poster'];
+        // these need wrapping otherwise the test will fail on every single one.
+        // or update your test to include all of these properties.
+
+        $this->type = $responseBody['Type'] ?? null;
+        $this->title = $responseBody['Title'] ?? null;
+        $this->genre = $responseBody['Genre'] ?? null;
+        $this->director = $responseBody['Director'] ?? null;
+        $this->writer = $responseBody['Writer'] ?? null;
+        $this->plot = $responseBody['Plot'] ?? null;
+        $this->rated = $responseBody['Rated'] ?? null;
+        $this->year = $responseBody['Year'] ?? null;
+        $this->runtime = $responseBody['Runtime'] ?? null;
+        $this->ratings = $responseBody['Ratings'] ?? null;
+        $this->poster = $responseBody['Poster'] ?? null;
 
     }
 
