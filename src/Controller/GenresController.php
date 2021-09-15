@@ -61,11 +61,6 @@ class GenresController extends AbstractController
         $entityManager->getRepository(Genre::class)->deleteAll();
         $entityManager->flush();
 
-//        //As films must have a genre(s), delete all films
-//        $entityManager = $this->getDoctrine()->getManager();
-//        $entityManager->getRepository(Film::class)->deleteAll();
-//        $entityManager->flush();
-
         return $this->redirectToRoute('manageGenresPage');
     }
 
