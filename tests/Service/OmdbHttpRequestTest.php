@@ -165,54 +165,6 @@ class OmdbHttpRequestTest extends TestCase
 
     }
 
-    public function testOmdbThrowsTypeErrorWhenArgumentIsNotAString(): void
-    {
-
-        $this->expectException(\TypeError::class);
-
-        $mockHandler = new MockHandler([
-            new Response(200, [], null),
-            new Response(200, [], null),
-            new Response(200, [], null),
-            new Response(200, [], null),
-            new Response(200, [], null),
-            new Response(200, [], null)
-        ]);
-
-        $handlerStack = HandlerStack::create($mockHandler);
-
-        $client = new Client(['handler' => $handlerStack]);
-
-        $omdbreq = new OmdbHttpRequest('34e585c5', $client);
-
-        $result = $omdbreq->getFilm([]);
-
-        $this->expectException(\TypeError::class);
-
-        $result = $omdbreq->getFilm(['a', 1, [false, true]]);
-
-        $this->expectException(\TypeError::class);
-
-        $result = $omdbreq->getFilm(null);
-
-        $this->expectException(\TypeError::class);
-
-        $result = $omdbreq->getFilm(-2);
-
-        $this->expectException(\TypeError::class);
-
-        $result = $omdbreq->getFilm(-2.7);
-
-        $this->expectException(\TypeError::class);
-
-        $result = $omdbreq->getFilm(true);
-
-        $this->expectException(\TypeError::class);
-
-        $result = $omdbreq->getFilm(false);
-
-    }
-
     public function testOmdbThrowsTypeErrorWhenArgumentNotGiven(): void
     {
 
