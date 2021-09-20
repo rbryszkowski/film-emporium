@@ -99,7 +99,7 @@ class GenresControllerTest extends WebTestCase
         }
 
         //go back to genres page
-        $crawler = $client->request('GET', '/genres');
+        $client->request('GET', '/genres');
 
         //test the delete all function
         $client->request('GET', '/genres/clear');

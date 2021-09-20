@@ -63,7 +63,7 @@
             {% for film in films  %}
                 <div class="row">
                     <div class="col-9">
-                        <p><b>Title:</b> {{ film.title }}  |  <b>Director:</b>{{ film.director ? film.director.name : 'N/A' }}
+                        <p><b>Title:</b> {{ film.title }}  |  <b>Director:</b>{{ film['director'] is defined ? film.director.name : 'N/A' }}
                         </p>
                     </div>
                     <div class="col-3">

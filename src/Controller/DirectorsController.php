@@ -27,6 +27,8 @@ class DirectorsController extends AbstractController
                 $manager = $this->getDoctrine()->getManager();
                 $manager->persist($directorModel);
                 $manager->flush();
+                $this->addFlash('success', 'the director: ' . $directorModel->getName() . ' has been added!');
+                return $this->redirectToRoute('manageDirectorsPage');
             }
 
         }
@@ -60,11 +62,6 @@ class DirectorsController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->getRepository(Director::class)->deleteAll();
         $entityManager->flush();
-
-//        //As films must have a director, delete all films
-//        $entityManager = $this->getDoctrine()->getManager();
-//        $entityManager->getRepository(Film::class)->deleteAll();
-//        $entityManager->flush();
 
         return $this->redirectToRoute('manageDirectorsPage');
 
