@@ -85,4 +85,33 @@ class GenresControllerTest extends WebTestCase
 
     }
 
+    public function testDeleteAllGenres() : void
+    {
+
+        $client = static::createClient();
+
+        // create and add 10 genres with random names
+        $genreNames = [];
+        for($i=1;$i<=10;$i++){
+            $genreName = bin2hex(random_bytes(10));
+            $client->request('POST', '/genres', ['genre' => ['name' => $genreName]]);
+            $genreNames[] = $genreName;
+        }
+
+        //go back to genres page
+        $crawler = $client->request('GET', '/genres');
+
+        //test the delete all function
+        $client->request('GET', '/genres/clear');
+
+        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+
+        $client->request('GET', '/genres');
+
+        foreach($genreNames as $genreName) {
+            $this->assertStringNotContainsString('<p>' . $genreName . '</p>', $client->getResponse()->getContent());
+        }
+
+    }
+
 }
