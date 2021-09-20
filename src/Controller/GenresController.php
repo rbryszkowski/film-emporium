@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Film;
 use App\Entity\Genre;
 use App\Form\GenreType;
+use Doctrine\ORM\EntityManager;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -45,6 +47,7 @@ class GenresController extends AbstractController
 
     public function deleteGenre(int $id): Response
     {
+
         $em = $this->getDoctrine()->getManager();
 
         $genre = $em->getRepository(Genre::class)->find($id);
