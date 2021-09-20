@@ -27,6 +27,8 @@ class GenresController extends AbstractController
                 $manager = $this->getDoctrine()->getManager();
                 $manager->persist($genreModel);
                 $manager->flush();
+                $this->addFlash('success', 'the genre: ' . $genreModel->getName() . ' has been added!');
+                return $this->redirectToRoute('manageGenresPage');
             }
 
         }

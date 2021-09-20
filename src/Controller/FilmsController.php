@@ -46,7 +46,11 @@ class FilmsController extends AbstractController
 
         foreach($featuredFilms as $featuredFilm) {
             try {
-                $featuredFilmsOmdb[] = $omdbReq->getFilmByTitle($featuredFilm->getTitle());
+                if ($featuredFilm->getOmdbID()) {
+                    $featuredFilmsOmdb[] = $omdbReq->getFilmById($featuredFilm->getOmdbID());
+                } else {
+                    $featuredFilmsOmdb[] = $omdbReq->getFilmByTitle($featuredFilm->getTitle());
+                }
             } catch(FilmNotFoundException $e) {
                 $featuredFilmsOmdb[] = null;
             }
@@ -76,7 +80,11 @@ class FilmsController extends AbstractController
         }
 
         try {
-            $omdbFilmData = $omdbReq->getFilmByTitle($film->getTitle());
+            if ($film->getOmdbID()) {
+                $omdbFilmData = $omdbReq->getFilmById($film->getOmdbID());
+            } else {
+                $omdbFilmData = $omdbReq->getFilmByTitle($film->getTitle());
+            }
         } catch(FilmNotFoundException $e) {
             $omdbFilmData = null;
         }

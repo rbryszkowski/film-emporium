@@ -14,9 +14,14 @@
                     <div class="col">
                         <a href="/films/details/{{ featured[i].id }}">
                             {% if featuredOmdb[i] != null %}
-                                <img class="film-img" src="{{ featuredOmdb[i].poster }}" alt="No poster available">
-                            {% else %}
-                                <p>No Poster available</p>
+                                {% if featuredOmdb[i].poster != null and featuredOmdb[i].poster != 'N/A' %}
+                                    <img class="film-img" src="{{ featuredOmdb[i].poster }}" alt="Film poster">
+                                {% else %}
+                                    <div class="film-not-found-placeholder">
+                                        <img src="{{ asset('media/film-reel-img.jpeg') }}" alt="film poster placeholder" width="100%" height="100%">
+                                        <p>No Poster available!</p>
+                                    </div>
+                                {% endif %}
                             {% endif %}
                             <p><b>{{ featured[i].title }}</b></p>
                         </a>

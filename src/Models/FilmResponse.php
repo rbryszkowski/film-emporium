@@ -16,12 +16,15 @@ class FilmResponse
     private $runtime;
     private $ratings;
     private $poster;
+    private $imdbID;
+    private $actors;
 
     public function __construct($responseBody) {
 
         // these need wrapping otherwise the test will fail on every single one.
         // or update your test to include all of these properties.
 
+        $this->imdbID = $responseBody['imdbID'] ?? null;
         $this->type = $responseBody['Type'] ?? null;
         $this->title = $responseBody['Title'] ?? null;
         $this->genre = $responseBody['Genre'] ?? null;
@@ -33,6 +36,7 @@ class FilmResponse
         $this->runtime = $responseBody['Runtime'] ?? null;
         $this->ratings = $responseBody['Ratings'] ?? null;
         $this->poster = $responseBody['Poster'] ?? null;
+        $this->actors = $responseBody['Actors'] ?? null;
 
     }
 
@@ -123,6 +127,22 @@ class FilmResponse
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * @return mixed|null
+     */
+    public function getImdbID()
+    {
+        return $this->imdbID;
+    }
+
+    /**
+     * @return mixed|null
+     */
+    public function getActors()
+    {
+        return $this->actors;
     }
 
 }

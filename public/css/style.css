@@ -2,10 +2,6 @@
    box-sizing: border-box;
  }
 
- .film-row {
-
- }
-
  .genre-tag {
      /*border: 2px solid #747272;*/
      /*border-radius: 5%;*/
@@ -15,12 +11,17 @@
      text-align: center;
  }
 
- .film-img {
+ /*.film-not-found-placeholder {*/
+ /* width: 100%;*/
+ /* height: 100%;*/
+ /*}*/
 
+ /*.film-not-found-placeholder > img {*/
+ /* width: 100%;*/
+ /* height: 100%;*/
+ /*}*/
+
+ .film-not-found-placeholder > p {
+  text-align: center;
  }
-
- label {
-  /*font-size: 100px !important;*/
- }
-
 

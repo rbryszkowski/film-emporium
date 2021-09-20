@@ -224,6 +224,7 @@ class OmdbHttpRequestTest extends TestCase
 
         $result = $omdbreq->getFilmById('tt0000000');
 
+
         $isFilmResponse = is_a($result, FilmResponse::class);
 
         $this->assertEquals(true, $isFilmResponse);
