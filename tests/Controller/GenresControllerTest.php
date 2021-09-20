@@ -54,13 +54,12 @@ class GenresControllerTest extends WebTestCase
         $genreName = bin2hex(random_bytes(10));
         $client->request('POST', '/genres', ['genre' => ['name' => $genreName]]);
 
-        //test that it goes to correct page
+        //test that add genre request goes to correct page
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
         self::assertResponseRedirects('/genres');
 
         //go back to genres page
         $crawler = $client->request('GET', '/genres');
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
 
         //assert that the new genre has been added
         $this->stringContains('the genre: ' . $genreName . ' has been added!', $client->getResponse()->getContent());
