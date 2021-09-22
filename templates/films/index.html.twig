@@ -64,11 +64,7 @@
                 <div class="row">
                     <div class="col-9">
                         <p>
-                            {{ dump(film.director) }}
-{#                            <b>Title:</b> {{ film.title }}  |  <b>Director:</b>{{ film.director is defined and film.director != null ? film.director.name : 'N/A' }}#}
-{#                        <p>{{ film.director.name }}</p>#}
-{#                            <b>Title:</b> {{ film.title }}  |  <b>Director:</b>{{ film['director'] is defined ? film.director.name : 'N/A' }}#}
-{#                            <b>Title:</b> {{ film.title }}  |  <b>Director:</b>{{ film.director.name is defined ? film.director.name : 'N/A' }}#}
+                            <b>Title:</b> {{ film.title }}  |  <b>Director:</b>{{ film.director is defined and film.director != null ? film.director.name : 'N/A' }}
                         </p>
                     </div>
                     <div class="col-3">

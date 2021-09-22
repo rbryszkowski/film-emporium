@@ -57,13 +57,17 @@ class GenresController extends AbstractController
             $em->flush();
         }
 
-        return $this->redirectToRoute('manageGenresPage');
+//        return $this->redirectToRoute('manageGenresPage');
+
+        return View::create();
     }
 
     public function deleteAllGenres() {
 
         $entityManager = $this->getDoctrine()->getManager();
+        //delete all genres
         $entityManager->getRepository(Genre::class)->deleteAll();
+
         $entityManager->flush();
 
         return $this->redirectToRoute('manageGenresPage');

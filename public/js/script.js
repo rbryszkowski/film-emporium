@@ -11,7 +11,7 @@ $(document).ready( () => {
             url: endPoint,
             type: 'DELETE',
             success: function(response) {
-                $('body').html(response);
+                location.reload();
             }
         })
     });
@@ -22,7 +22,7 @@ $(document).ready( () => {
             url: endPoint,
             type: 'DELETE',
             success: function(response) {
-                $('body').html(response);
+                location.reload();
             }
         })
     });
@@ -34,7 +34,7 @@ $(document).ready( () => {
             url: endPoint,
             type: 'DELETE',
             success: function(response) {
-              $('body').html(response);
+                location.reload();
             }
         })
     });
@@ -45,7 +45,7 @@ $(document).ready( () => {
             url: endPoint,
             type: 'DELETE',
             success: function(response) {
-                $('body').html(response);
+                location.reload();
             }
         })
     });
@@ -57,7 +57,10 @@ $(document).ready( () => {
             url: endPoint,
             type: 'DELETE',
             success: function(response) {
-                $('body').html(response);
+                location.reload();
+            },
+            failure: function(error) {
+                console.log(error);
             }
         })
     });
@@ -68,7 +71,10 @@ $(document).ready( () => {
             url: endPoint,
             type: 'DELETE',
             success: function(response) {
-                $('body').html(response);
+                location.reload();
+            },
+            failure: function(error) {
+                console.log(error);
             }
         })
     });

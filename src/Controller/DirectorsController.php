@@ -49,24 +49,41 @@ class DirectorsController extends AbstractController
 
         $director = $em->getRepository(Director::class)->find($id);
 
+        $associatedFilms = $em->getRepository(Film::class)->findBy(['director' => $director]);
+
+        foreach ($associatedFilms as $film) {
+            $film->setDirector(null);
+            $em->persist($film);
+            $em->flush();
+        }
+
         if ($director !== null) {
             $em->remove($director);
             $em->flush();
         }
 
-
-
         return $this->redirectToRoute('manageDirectorsPage');
+
     }
 
     public function deleteAllDirectors() {
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->getRepository(Director::class)->deleteAll();
+
+        //set director property in all films to null
+        $allFilms = $entityManager->getRepository(Film::class)->findAll();
+
+        foreach ($allFilms as $film) {
+            $film->setDirector(null);
+            $entityManager->persist($film);
+        }
+
         $entityManager->flush();
 
         return $this->redirectToRoute('manageDirectorsPage');
 
     }
+
 
 }
