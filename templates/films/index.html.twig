@@ -34,8 +34,8 @@
 
         <h3>Search Film</h3>
 
-        <a href="{{ path('deleteAllFilms') }}">Delete All Films</a>
-
+{#        <a href="{{ path('deleteAllFilms') }}">Delete All Films</a>#}
+        <button class="btn btn-primary delete-all-films">Delete All Films</button>
         <form class="row mt-4" action="/" method="GET">
                 <div class="col">
                     <input class="form-control" type="search" name="search" value="{{ search }}" />
@@ -63,12 +63,18 @@
             {% for film in films  %}
                 <div class="row">
                     <div class="col-9">
-                        <p><b>Title:</b> {{ film.title }}  |  <b>Director:</b>{{ film['director'] is defined ? film.director.name : 'N/A' }}
+                        <p>
+                            {{ dump(film.director) }}
+{#                            <b>Title:</b> {{ film.title }}  |  <b>Director:</b>{{ film.director is defined and film.director != null ? film.director.name : 'N/A' }}#}
+{#                        <p>{{ film.director.name }}</p>#}
+{#                            <b>Title:</b> {{ film.title }}  |  <b>Director:</b>{{ film['director'] is defined ? film.director.name : 'N/A' }}#}
+{#                            <b>Title:</b> {{ film.title }}  |  <b>Director:</b>{{ film.director.name is defined ? film.director.name : 'N/A' }}#}
                         </p>
                     </div>
                     <div class="col-3">
                         <a class="btn btn-primary" type="submit" href="/films/update/{{ film.id }}">Update</a>
-                        <a class="btn btn-primary" type="submit" href="/films/delete/{{ film.id }}">Delete</a>
+{#                        <a class="btn btn-primary" type="submit" href="/films/delete/{{ film.id }}">Delete</a>#}
+                        <button class="btn btn-primary delete-film" id="{{ film.id }}">Delete</button>
                         <a class="btn btn-primary" type="submit" href="/films/details/{{ film.id }}">Details</a>
                     </div>
                 </div>

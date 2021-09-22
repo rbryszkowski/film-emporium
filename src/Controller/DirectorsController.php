@@ -54,6 +54,8 @@ class DirectorsController extends AbstractController
             $em->flush();
         }
 
+
+
         return $this->redirectToRoute('manageDirectorsPage');
     }
 
@@ -65,8 +67,6 @@ class DirectorsController extends AbstractController
 
         return $this->redirectToRoute('manageDirectorsPage');
 
-
     }
-
 
 }
