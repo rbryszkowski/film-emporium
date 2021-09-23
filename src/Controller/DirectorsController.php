@@ -66,14 +66,14 @@ class DirectorsController extends AbstractController
 
     }
 
-    public function deleteAllDirectors() {
+    public function deleteAllDirectors(): Response {
 
         $entityManager = $this->getDoctrine()->getManager();
+
         $entityManager->getRepository(Director::class)->deleteAll();
 
-        //set director property in all films to null
         $allFilms = $entityManager->getRepository(Film::class)->findAll();
-
+        //set director property in all films to null
         foreach ($allFilms as $film) {
             $film->setDirector(null);
             $entityManager->persist($film);

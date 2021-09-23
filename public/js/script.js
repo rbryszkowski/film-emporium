@@ -7,6 +7,7 @@ $(document).ready( () => {
     //film actions
     $('.delete-film').on('click',  () => {
         let endPoint = '/films/delete/' + $('.delete-film').attr('id');
+        console.log(endPoint);
         $.ajax({
             url: endPoint,
             type: 'DELETE',

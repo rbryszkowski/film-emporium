@@ -18,43 +18,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FilmType extends AbstractType
 {
-    private $em;
-
-    public function __construct(EntityManagerInterface $em) {
-        $this->em = $em;
-    }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
-//        $formBase = $builder
-//            ->add('title', TextType::class)
-//            ->add('description', TextType::class)
-//            ->add('submit', SubmitType::class);
-//
-//        if ($this->em->getRepository(Genre::class)->findAll() !== []) {
-//            $formBase
-//                ->add('genres', EntityType::class, [
-//                    'class' => Genre::class,
-//                    'choice_label' => 'name',
-//                    'multiple' => true
-//                ]);
-//        } else {
-//            $formBase
-//                ->add('genres', TextType::class);
-//        }
-//
-//        if ($this->em->getRepository(Director::class)->findAll() !== []) {
-//            $formBase
-//                ->add('director', EntityType::class, [
-//                    'class' => Director::class,
-//                    'choice_label' => 'name',
-//                    'multiple' => true
-//                ]);
-//        } else {
-//            $formBase
-//                ->add('director', TextType::class);
-//        }
 
         $builder
             ->add('title', TextType::class)
@@ -77,6 +43,7 @@ class FilmType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Film::class,
+            'csrf_protection' => false // temporary removal of protection
         ]);
     }
 }

@@ -6,6 +6,14 @@
 
         <h3>Add Film:</h3>
 
+        {% for flashMessage in app.session.flashbag.get('success') %}
+
+            <div class="alert alert-success">
+                {{ flashMessage }}
+            </div>
+
+        {% endfor %}
+
         {{ form_start(form) }}
 
         <div class="row mt-2">

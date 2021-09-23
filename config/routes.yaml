@@ -6,14 +6,17 @@ filmIndexPage:
 filmDetailsPage:
   path: /films/details/{id}
   controller: App\Controller\FilmsController::filmDetailsPage
+  methods: GET
 
 updateFilmPage:
   path: /films/update/{id}
   controller: App\Controller\FilmsController::updateFilmPage
+  methods: GET|POST
 
 addFilmPage:
   path: /films/add
   controller: App\Controller\FilmsController::addFilmPage
+  methods: GET|POST
 
 manageGenresPage:
   path: /genres

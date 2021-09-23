@@ -72,10 +72,11 @@ class GenresControllerTest extends WebTestCase
         $this->assertEquals($genreName, $lastGenre->text());
 
         //obtain the route of the recently added genres delete button
-        $genreDeleteRoute = $crawler->filter('a[type=submit]')->last()->attr('href');
+        $genreID = $crawler->filter('.delete-genre')->last()->attr('id');
+        $genreDeleteRoute = '/genres/delete/' . $genreID;
 
         //test the delete function
-        $client->request('GET', $genreDeleteRoute);
+        $client->request('DELETE', $genreDeleteRoute);
 
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
 
@@ -102,7 +103,7 @@ class GenresControllerTest extends WebTestCase
         $client->request('GET', '/genres');
 
         //test the delete all function
-        $client->request('GET', '/genres/clear');
+        $client->request('DELETE', '/genres/clear');
 
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
 

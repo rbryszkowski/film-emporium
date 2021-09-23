@@ -24,6 +24,7 @@ class FilmsController extends AbstractController
     public function filmIndexPage(Request $request, OmdbHttpRequest $omdbReq): Response
     {
 
+
         $search = $request->get('search', '');
 
         $selectedGenre = $request->get('genres', '');
@@ -110,8 +111,8 @@ class FilmsController extends AbstractController
                 $manager = $this->getDoctrine()->getManager();
                 $manager->persist($filmModel);
                 $manager->flush();
-
-                return $this->redirectToRoute('filmIndexPage');
+                $this->addFlash('success', 'the film: ' . $filmModel->getTitle() . ' has been added!');
+                return $this->redirectToRoute('addFilmPage');
             }
 
         }
