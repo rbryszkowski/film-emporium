@@ -24,6 +24,7 @@ class FilmsController extends AbstractController
     public function filmIndexPage(Request $request, OmdbHttpRequest $omdbReq): Response
     {
 
+
         $search = $request->get('search', '');
 
         $selectedGenre = $request->get('genres', '');
@@ -46,7 +47,11 @@ class FilmsController extends AbstractController
 
         foreach($featuredFilms as $featuredFilm) {
             try {
-                $featuredFilmsOmdb[] = $omdbReq->getFilm($featuredFilm->getTitle());
+                if ($featuredFilm->getOmdbID()) {
+                    $featuredFilmsOmdb[] = $omdbReq->getFilmById($featuredFilm->getOmdbID());
+                } else {
+                    $featuredFilmsOmdb[] = $omdbReq->getFilmByTitle($featuredFilm->getTitle());
+                }
             } catch(FilmNotFoundException $e) {
                 $featuredFilmsOmdb[] = null;
             }
@@ -76,7 +81,11 @@ class FilmsController extends AbstractController
         }
 
         try {
-            $omdbFilmData = $omdbReq->getFilm($film->getTitle());
+            if ($film->getOmdbID()) {
+                $omdbFilmData = $omdbReq->getFilmById($film->getOmdbID());
+            } else {
+                $omdbFilmData = $omdbReq->getFilmByTitle($film->getTitle());
+            }
         } catch(FilmNotFoundException $e) {
             $omdbFilmData = null;
         }
@@ -102,8 +111,8 @@ class FilmsController extends AbstractController
                 $manager = $this->getDoctrine()->getManager();
                 $manager->persist($filmModel);
                 $manager->flush();
-
-                return $this->redirectToRoute('filmIndexPage');
+                $this->addFlash('success', 'the film: ' . $filmModel->getTitle() . ' has been added!');
+                return $this->redirectToRoute('addFilmPage');
             }
 
         }

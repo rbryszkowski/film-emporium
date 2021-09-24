@@ -26,7 +26,7 @@ class Director
      * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\NotBlank
      * @Assert\Length(max=50)
-     * @Assert\Regex(pattern="/[A-Za-z]+/")
+     * @Assert\Regex(pattern="/^[A-Za-z]+$/")
      */
     private $name;
 

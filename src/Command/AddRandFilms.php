@@ -58,6 +58,7 @@ class AddRandFilms extends Command
 
             $film = new Film();
             $film->setTitle($randOmdbFilm->getTitle());
+            $film->setOmdbID($randOmdbFilm->getImdbID());
             $film->setDescription($randOmdbFilm->getPlot());
 
             if ($randOmdbFilm->getGenre() !== 'N/A') {
@@ -114,7 +115,7 @@ class AddRandFilms extends Command
         $randOmdbId = 'tt' . str_pad('' . random_int(0, 2155529), 7, '0', STR_PAD_LEFT);
 
         try {
-            $result = $this->omdbReq->getFilm(['i' => $randOmdbId]);
+            $result = $this->omdbReq->getFilmById($randOmdbId);
         } catch(FilmNotFoundException $e) {
             $result = null;
         }

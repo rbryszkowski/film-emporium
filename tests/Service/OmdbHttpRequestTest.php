@@ -31,7 +31,7 @@ class OmdbHttpRequestTest extends TestCase
 
         $omdbreq = new OmdbHttpRequest('34e585c5', $client);
 
-        $result = $omdbreq->getFilm('bla');
+        $result = $omdbreq->getFilmByTitle('bla');
 
         $this->assertEquals(null, $result->getTitle());
         $this->assertEquals(null, $result->getPlot());
@@ -75,7 +75,7 @@ class OmdbHttpRequestTest extends TestCase
 
         $omdbreq = new OmdbHttpRequest('34e585c5', $client);
 
-        $result = $omdbreq->getFilm('bla');
+        $result = $omdbreq->getFilmByTitle('bla');
 
         $this->assertEquals('title', $result->getTitle());
         $this->assertEquals('plot', $result->getPlot());
@@ -104,7 +104,7 @@ class OmdbHttpRequestTest extends TestCase
 
         $omdbreq = new OmdbHttpRequest('34e585c5', $client);
 
-        $result = $omdbreq->getFilm('blablabla');
+        $result = $omdbreq->getFilmByTitle('blablabla');
 
     }
 
@@ -123,7 +123,7 @@ class OmdbHttpRequestTest extends TestCase
 
         $omdbreq = new OmdbHttpRequest('34e585c5', $client);
 
-        $result = $omdbreq->getFilm('blablabla');
+        $result = $omdbreq->getFilmByTitle('blablabla');
 
     }
 
@@ -142,7 +142,7 @@ class OmdbHttpRequestTest extends TestCase
 
         $omdbreq = new OmdbHttpRequest('34e585c5', $client);
 
-        $result = $omdbreq->getFilm('');
+        $result = $omdbreq->getFilmByTitle('');
 
     }
 
@@ -161,7 +161,7 @@ class OmdbHttpRequestTest extends TestCase
 
         $omdbreq = new OmdbHttpRequest('34e585c5', $client);
 
-        $result = $omdbreq->getFilm('               ');
+        $result = $omdbreq->getFilmByTitle('               ');
 
     }
 
@@ -180,7 +180,54 @@ class OmdbHttpRequestTest extends TestCase
 
         $omdbreq = new OmdbHttpRequest('34e585c5', $client);
 
-        $result = $omdbreq->getFilm();
+        $result = $omdbreq->getFilmByTitle();
+
+    }
+
+    public function testGetFilmByIdInvalidArgumentExceptionWhenNotGivenIdWithSevenDigitsAndStartingWithtt(): void
+    {
+
+        $testIds = ['0tt000000', '0000000', 'aa0000000', '000000000', 'tttt0000000', 'tt000000000000', 'tttt000', 't0000000', 't0', '0000000tt'];
+
+        foreach ($testIds as $id){
+
+            $this->expectException(\InvalidArgumentException::class);
+
+            $mockHandler = new MockHandler([
+                new Response(200, [], null)
+            ]);
+
+            $handlerStack = HandlerStack::create($mockHandler);
+
+            $client = new Client(['handler' => $handlerStack]);
+
+            $omdbreq = new OmdbHttpRequest('34e585c5', $client);
+
+            $result = $omdbreq->getFilmById($id);
+
+        }
+
+    }
+
+    public function testGetFilmByIdReturnsFilmResponseWhenGivenValidIdAnd200Response(): void
+    {
+
+        $mockHandler = new MockHandler([
+            new Response(200, [], null)
+        ]);
+
+        $handlerStack = HandlerStack::create($mockHandler);
+
+        $client = new Client(['handler' => $handlerStack]);
+
+        $omdbreq = new OmdbHttpRequest('34e585c5', $client);
+
+        $result = $omdbreq->getFilmById('tt0000000');
+
+
+        $isFilmResponse = is_a($result, FilmResponse::class);
+
+        $this->assertEquals(true, $isFilmResponse);
 
     }
 

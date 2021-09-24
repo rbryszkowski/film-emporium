@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Film;
 use App\Entity\Genre;
 use App\Form\GenreType;
+use Doctrine\ORM\EntityManager;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,6 +29,8 @@ class GenresController extends AbstractController
                 $manager = $this->getDoctrine()->getManager();
                 $manager->persist($genreModel);
                 $manager->flush();
+                $this->addFlash('success', 'the genre: ' . $genreModel->getName() . ' has been added!');
+                return $this->redirectToRoute('manageGenresPage');
             }
 
         }
@@ -43,6 +47,7 @@ class GenresController extends AbstractController
 
     public function deleteGenre(int $id): Response
     {
+
         $em = $this->getDoctrine()->getManager();
 
         $genre = $em->getRepository(Genre::class)->find($id);
@@ -53,18 +58,16 @@ class GenresController extends AbstractController
         }
 
         return $this->redirectToRoute('manageGenresPage');
+
     }
 
-    public function deleteAllGenres() {
+    public function deleteAllGenres(): Response {
 
         $entityManager = $this->getDoctrine()->getManager();
+        //delete all genres
         $entityManager->getRepository(Genre::class)->deleteAll();
-        $entityManager->flush();
 
-//        //As films must have a genre(s), delete all films
-//        $entityManager = $this->getDoctrine()->getManager();
-//        $entityManager->getRepository(Film::class)->deleteAll();
-//        $entityManager->flush();
+        $entityManager->flush();
 
         return $this->redirectToRoute('manageGenresPage');
     }
