@@ -31,7 +31,7 @@ class OmdbHttpRequestTest extends TestCase
 
         $omdbreq = new OmdbHttpRequest('34e585c5', $client);
 
-        $result = $omdbreq->getFilm('bla');
+        $result = $omdbreq->getFilmByTitle('bla');
 
         $this->assertEquals(null, $result->getTitle());
         $this->assertEquals(null, $result->getPlot());
@@ -75,7 +75,7 @@ class OmdbHttpRequestTest extends TestCase
 
         $omdbreq = new OmdbHttpRequest('34e585c5', $client);
 
-        $result = $omdbreq->getFilm('bla');
+        $result = $omdbreq->getFilmByTitle('bla');
 
         $this->assertEquals('title', $result->getTitle());
         $this->assertEquals('plot', $result->getPlot());
@@ -104,7 +104,7 @@ class OmdbHttpRequestTest extends TestCase
 
         $omdbreq = new OmdbHttpRequest('34e585c5', $client);
 
-        $result = $omdbreq->getFilm('blablabla');
+        $result = $omdbreq->getFilmByTitle('blablabla');
 
     }
 
@@ -123,7 +123,7 @@ class OmdbHttpRequestTest extends TestCase
 
         $omdbreq = new OmdbHttpRequest('34e585c5', $client);
 
-        $result = $omdbreq->getFilm('blablabla');
+        $result = $omdbreq->getFilmByTitle('blablabla');
 
     }
 
@@ -142,7 +142,7 @@ class OmdbHttpRequestTest extends TestCase
 
         $omdbreq = new OmdbHttpRequest('34e585c5', $client);
 
-        $result = $omdbreq->getFilm('');
+        $result = $omdbreq->getFilmByTitle('');
 
     }
 
@@ -161,7 +161,7 @@ class OmdbHttpRequestTest extends TestCase
 
         $omdbreq = new OmdbHttpRequest('34e585c5', $client);
 
-        $result = $omdbreq->getFilm('               ');
+        $result = $omdbreq->getFilmByTitle('               ');
 
     }
 
@@ -180,7 +180,7 @@ class OmdbHttpRequestTest extends TestCase
 
         $omdbreq = new OmdbHttpRequest('34e585c5', $client);
 
-        $result = $omdbreq->getFilm();
+        $result = $omdbreq->getFilmByTitle();
 
     }
 

@@ -4,9 +4,11 @@ namespace App\Repository;
 
 use App\Entity\Director;
 use App\Entity\Film;
+use App\Events\FilmDeletedEvent;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @method Film|null find($id, $lockMode = null, $lockVersion = null)
@@ -16,8 +18,11 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class FilmRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $dispatcher;
+
+    public function __construct(ManagerRegistry $registry, EventDispatcherInterface $dispatcher)
     {
+        $this->dispatcher = $dispatcher;
         parent::__construct($registry, Film::class);
     }
 
@@ -64,9 +69,20 @@ class FilmRepository extends ServiceEntityRepository
 
     public function deleteAll()
     {
+
+        $allFilms = $this->findAll();
+
         $qb = $this->createQueryBuilder('films');
 
-        return $qb->delete()->getQuery()->getResult();
+        $query = $qb->delete()->getQuery()->getResult();
+
+        //dispatch delete event for each film
+        foreach($allFilms as $film) {
+            $deleteFilmEvent = new FilmDeletedEvent($film);
+            $this->dispatcher->dispatch($deleteFilmEvent, FilmDeletedEvent::NAME);
+        }
+
+        return $query;
 
     }
 

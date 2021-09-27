@@ -6,12 +6,16 @@ use App\Entity\Director;
 use App\Entity\FeatureFilm;
 use App\Entity\Film;
 use App\Entity\Genre;
+use App\Events\FilmAddedEvent;
+use App\Events\FilmDeletedEvent;
 use App\Exceptions\FilmNotFoundException;
 use App\Form\FilmType;
 use App\Service\OmdbHttpRequest;
 use GuzzleHttp\Client;
 use PhpParser\Node\Expr\Cast\Object_;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -46,7 +50,7 @@ class FilmsController extends AbstractController
 
         foreach($featuredFilms as $featuredFilm) {
             try {
-                $featuredFilmsOmdb[] = $omdbReq->getFilm($featuredFilm->getTitle());
+                $featuredFilmsOmdb[] = $omdbReq->getFilmByTitle($featuredFilm->getTitle());
             } catch(FilmNotFoundException $e) {
                 $featuredFilmsOmdb[] = null;
             }
@@ -76,7 +80,7 @@ class FilmsController extends AbstractController
         }
 
         try {
-            $omdbFilmData = $omdbReq->getFilm($film->getTitle());
+            $omdbFilmData = $omdbReq->getFilmByTitle($film->getTitle());
         } catch(FilmNotFoundException $e) {
             $omdbFilmData = null;
         }
@@ -87,7 +91,7 @@ class FilmsController extends AbstractController
         ]);
     }
 
-    public function addFilmPage(Request $request): Response
+    public function addFilmPage(Request $request, EventDispatcherInterface $dispatcher): Response
     {
 
         $filmModel = new Film();
@@ -102,6 +106,9 @@ class FilmsController extends AbstractController
                 $manager = $this->getDoctrine()->getManager();
                 $manager->persist($filmModel);
                 $manager->flush();
+                //dispatch a film added event
+                $filmAddedEvent = new FilmAddedEvent($filmModel);
+                $dispatcher->dispatch($filmAddedEvent, FilmAddedEvent::NAME);
 
                 return $this->redirectToRoute('filmIndexPage');
             }
@@ -142,7 +149,7 @@ class FilmsController extends AbstractController
 
     }
 
-    public function deleteFilm(int $id): Response
+    public function deleteFilm(int $id, EventDispatcherInterface $dispatcher): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
 
@@ -151,15 +158,23 @@ class FilmsController extends AbstractController
         if ($film !== null) {
             $entityManager->remove($film);
             $entityManager->flush();
+            $deleteFilmEvent = new FilmDeletedEvent($film);
+            $dispatcher->dispatch($deleteFilmEvent, FilmDeletedEvent::NAME);
         }
 
         return $this->redirectToRoute('filmIndexPage');
     }
 
-    public function deleteAllFilms() {
+    public function deleteAllFilms(EventDispatcherInterface $dispatcher) {
 
         $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->getRepository(Film::class)->deleteAll();
+        $allFilms = $entityManager->getRepository(Film::class);
+//        //dispatch delete event for each film
+//        foreach($allFilms as $film) {
+//            $deleteFilmEvent = new FilmDeletedEvent($film);
+//            $dispatcher->dispatch($deleteFilmEvent, FilmDeletedEvent::NAME);
+//        }
+        $allFilms->deleteAll();
         $entityManager->flush();
 
         return $this->redirectToRoute('filmIndexPage');

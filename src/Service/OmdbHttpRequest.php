@@ -39,7 +39,7 @@ class OmdbHttpRequest
 
     }
 
-    public function getFilm(string $filmTitle)
+    public function getFilmByTitle(string $filmTitle)
     {
 
         if ( !$filmTitle || !preg_match("/\S/", $filmTitle) ) {
@@ -48,6 +48,29 @@ class OmdbHttpRequest
 
         $params['apikey'] = $this->apikey;
         $params['t'] = $filmTitle;
+
+        $urlParams = http_build_query($params);
+        $response = $this->client->request('GET', $this->url . $urlParams);
+
+        if($response->getStatusCode() !== 200) {
+            throw new FilmNotFoundException('Film not found!');
+        }
+
+        $responseBody = json_decode($response->getBody(), true);
+
+        return new FilmResponse($responseBody);
+
+    }
+
+    public function getFilmByImdbId(string $ImdbId)
+    {
+
+        if (!preg_match("/^t{2}\d{7}$/", $ImdbId) ) {
+            throw new \InvalidArgumentException('Argument must be a valid imdb id of type string!');
+        }
+
+        $params['apikey'] = $this->apikey;
+        $params['i'] = $ImdbId;
 
         $urlParams = http_build_query($params);
         $response = $this->client->request('GET', $this->url . $urlParams);

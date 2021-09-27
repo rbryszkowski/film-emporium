@@ -111,10 +111,10 @@ class AddRandFilms extends Command
     private function getRandOmdbFilm() {
 
 //        IMDB id is a 7 digit number prefixed with 'tt' (between 0 and 2155529)
-        $randOmdbId = 'tt' . str_pad('' . random_int(0, 2155529), 7, '0', STR_PAD_LEFT);
+        $randImdbId = 'tt' . str_pad('' . random_int(0, 2155529), 7, '0', STR_PAD_LEFT);
 
         try {
-            $result = $this->omdbReq->getFilm(['i' => $randOmdbId]);
+            $result = $this->omdbReq->getFilmByImdbId($randImdbId);
         } catch(FilmNotFoundException $e) {
             $result = null;
         }
