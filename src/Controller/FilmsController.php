@@ -169,11 +169,6 @@ class FilmsController extends AbstractController
 
         $entityManager = $this->getDoctrine()->getManager();
         $allFilms = $entityManager->getRepository(Film::class);
-//        //dispatch delete event for each film
-//        foreach($allFilms as $film) {
-//            $deleteFilmEvent = new FilmDeletedEvent($film);
-//            $dispatcher->dispatch($deleteFilmEvent, FilmDeletedEvent::NAME);
-//        }
         $allFilms->deleteAll();
         $entityManager->flush();
 
