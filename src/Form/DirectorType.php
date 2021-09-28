@@ -24,8 +24,10 @@ class DirectorType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Director::class
+            'data_class' => Director::class,
+            'csrf_protection' => false // temporary removal of protection
         ]);
+
     }
 
 }

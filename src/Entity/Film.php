@@ -28,6 +28,11 @@ class Film
     private $title;
 
     /**
+     * @ORM\Column(type="string", length=9, unique=true, nullable=true)
+     */
+    private $omdbID;
+
+    /**
      * @ORM\ManyToMany(targetEntity="Genre", inversedBy="films")
      */
     private $genres;
@@ -110,6 +115,22 @@ class Film
     {
         $this->genres = $genres;
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOmdbID()
+    {
+        return $this->omdbID;
+    }
+
+    /**
+     * @param mixed $omdbID
+     */
+    public function setOmdbID($omdbID): void
+    {
+        $this->omdbID = $omdbID;
     }
 
 

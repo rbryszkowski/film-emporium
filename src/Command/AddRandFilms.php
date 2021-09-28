@@ -58,6 +58,7 @@ class AddRandFilms extends Command
 
             $film = new Film();
             $film->setTitle($randOmdbFilm->getTitle());
+            $film->setOmdbID($randOmdbFilm->getImdbID());
             $film->setDescription($randOmdbFilm->getPlot());
 
             if ($randOmdbFilm->getGenre() !== 'N/A') {

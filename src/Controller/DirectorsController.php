@@ -27,6 +27,8 @@ class DirectorsController extends AbstractController
                 $manager = $this->getDoctrine()->getManager();
                 $manager->persist($directorModel);
                 $manager->flush();
+                $this->addFlash('success', 'the director: ' . $directorModel->getName() . ' has been added!');
+                return $this->redirectToRoute('manageDirectorsPage');
             }
 
         }
@@ -47,27 +49,39 @@ class DirectorsController extends AbstractController
 
         $director = $em->getRepository(Director::class)->find($id);
 
+        $associatedFilms = $em->getRepository(Film::class)->findBy(['director' => $director]);
+
+        foreach ($associatedFilms as $film) {
+            $film->setDirector(null);
+            $em->persist($film);
+            $em->flush();
+        }
+
         if ($director !== null) {
             $em->remove($director);
             $em->flush();
         }
 
         return $this->redirectToRoute('manageDirectorsPage');
+
     }
 
-    public function deleteAllDirectors() {
+    public function deleteAllDirectors(): Response {
 
         $entityManager = $this->getDoctrine()->getManager();
+
         $entityManager->getRepository(Director::class)->deleteAll();
+
+        $allFilms = $entityManager->getRepository(Film::class)->findAll();
+        //set director property in all films to null
+        foreach ($allFilms as $film) {
+            $film->setDirector(null);
+            $entityManager->persist($film);
+        }
+
         $entityManager->flush();
 
-//        //As films must have a director, delete all films
-//        $entityManager = $this->getDoctrine()->getManager();
-//        $entityManager->getRepository(Film::class)->deleteAll();
-//        $entityManager->flush();
-
         return $this->redirectToRoute('manageDirectorsPage');
-
 
     }
 
