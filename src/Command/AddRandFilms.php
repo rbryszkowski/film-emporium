@@ -52,13 +52,13 @@ class AddRandFilms extends Command
             do {
                 $output->writeln('searching OMDB...');
                 $randOmdbFilm = $this->getRandOmdbFilm();
-            } while( !$randOmdbFilm || $randOmdbFilm->getType() !== 'movie' || $this->entityManager->getRepository(Film::class)->findOneBy(['title' => $randOmdbFilm->getTitle()]) );
+            } while( !$randOmdbFilm || $randOmdbFilm->getType() !== 'movie' || $this->entityManager->getRepository(Film::class)->findOneBy(['imdbID' => $randOmdbFilm->getImdbID()]) );
 
             $output->writeln('found film with title: ' . $randOmdbFilm->getTitle());
 
             $film = new Film();
             $film->setTitle($randOmdbFilm->getTitle());
-            $film->setOmdbID($randOmdbFilm->getImdbID());
+            $film->setImdbID($randOmdbFilm->getImdbID());
             $film->setDescription($randOmdbFilm->getPlot());
 
             if ($randOmdbFilm->getGenre() !== 'N/A') {

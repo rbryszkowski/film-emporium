@@ -34,7 +34,7 @@ class FilmSubscriber implements EventSubscriberInterface  {
         $filmLog = new FilmLog();
         $filmLog->setFilmTitle($filmTitle);
         $filmLog->setActiontype('add');
-        $timestamp = gmdate('r', time());
+        $timestamp = new \DateTime('now');
         $filmLog->setTimestamp($timestamp);
 
         $this->entityManager->persist($filmLog);
@@ -50,7 +50,7 @@ class FilmSubscriber implements EventSubscriberInterface  {
         $filmLog = new FilmLog();
         $filmLog->setFilmTitle($filmTitle);
         $filmLog->setActiontype('delete');
-        $timestamp = gmdate('r', time());
+        $timestamp = new \DateTime('now');
         $filmLog->setTimestamp($timestamp);
 
         $this->entityManager->persist($filmLog);

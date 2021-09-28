@@ -25,13 +25,13 @@ class FilmLog
     private $filmTitle;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="datetime")
      */
     private $timestamp;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * * @Assert\Regex(pattern="/^add$|^delete$/")
+     * @Assert\Regex(pattern="/^add$|^delete$/")
      */
     private $actiontype;
 
@@ -40,12 +40,12 @@ class FilmLog
         return $this->id;
     }
 
-    public function getTimestamp(): ?string
+    public function getTimestamp() : ?\DateTime
     {
         return $this->timestamp;
     }
 
-    public function setTimestamp(string $timestamp): self
+    public function setTimestamp(\DateTime $timestamp): self
     {
         $this->timestamp = $timestamp;
 
