@@ -6,14 +6,17 @@ filmIndexPage:
 filmDetailsPage:
   path: /films/details/{id}
   controller: App\Controller\FilmsController::filmDetailsPage
+  methods: GET
 
 updateFilmPage:
   path: /films/update/{id}
   controller: App\Controller\FilmsController::updateFilmPage
+  methods: GET|POST
 
 addFilmPage:
   path: /films/add
   controller: App\Controller\FilmsController::addFilmPage
+  methods: GET|POST
 
 manageGenresPage:
   path: /genres
@@ -27,32 +30,32 @@ manageDirectorsPage:
 deleteFilm:
   path: /films/delete/{id}
   controller: App\Controller\FilmsController::deleteFilm
-  methods: GET
+  methods: DELETE
 
 deleteAllFilms:
   path: /films/clear
   controller: App\Controller\FilmsController::deleteAllFilms
-  methods: GET
+  methods: DELETE
 
 deleteAllGenres:
   path: /genres/clear
   controller: App\Controller\GenresController::deleteAllGenres
-  methods: GET
+  methods: DELETE
 
 deleteGenre:
   path: /genres/delete/{id}
   controller: App\Controller\GenresController::deleteGenre
-  methods: GET
+  methods: DELETE
 
 deleteAllDirectors:
   path: /directors/clear
   controller: App\Controller\DirectorsController::deleteAllDirectors
-  methods: GET
+  methods: DELETE
 
 deleteDirector:
   path: /directors/delete/{id}
   controller: App\Controller\DirectorsController::deleteDirector
-  methods: GET
+  methods: DELETE
 
 
 

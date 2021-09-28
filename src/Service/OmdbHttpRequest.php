@@ -39,11 +39,11 @@ class OmdbHttpRequest
 
     }
 
-    public function getFilm(string $filmTitle)
+    public function getFilmByTitle(string $filmTitle)
     {
 
-        if ( !$filmTitle || !preg_match("/\S/", $filmTitle) ) {
-            throw new \InvalidArgumentException('Argument must be a valid film title of type string!');
+        if (!preg_match("/\S/", $filmTitle)) {
+            throw new \InvalidArgumentException('Argument must be a valid film title!');
         }
 
         $params['apikey'] = $this->apikey;
@@ -62,6 +62,28 @@ class OmdbHttpRequest
 
     }
 
+    public function getFilmById(string $id)
+    {
+
+        if (!preg_match("/t{2}\d{7}/", $id)) {
+            throw new \InvalidArgumentException('Argument must be a valid id with format (tt1234567)');
+        }
+
+        $params['apikey'] = $this->apikey;
+        $params['i'] = $id;
+
+        $urlParams = http_build_query($params);
+        $response = $this->client->request('GET', $this->url . $urlParams);
+
+        if($response->getStatusCode() !== 200) {
+            throw new FilmNotFoundException('Film not found!');
+        }
+
+        $responseBody = json_decode($response->getBody(), true);
+
+        return new FilmResponse($responseBody);
+
+    }
 
 
 }
