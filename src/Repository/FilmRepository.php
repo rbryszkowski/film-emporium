@@ -6,6 +6,7 @@ use App\Entity\Director;
 use App\Entity\Film;
 use App\Events\FilmDeletedEvent;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -71,6 +72,14 @@ class FilmRepository extends ServiceEntityRepository
         $allFilms = $this->findAll();
 
         $qb = $this->createQueryBuilder('films');
+
+//        $allFilms = $qb
+//            ->select('partial f.{title}')
+//            ->from(Film::class, 'f')
+//            ->getQuery()
+//            ->getResult(); // this code is incomplete..
+//
+//        $dql = dump($qb->getDQL());
 
         $query = $qb->delete()->getQuery()->getResult();
 

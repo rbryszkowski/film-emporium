@@ -47,9 +47,7 @@ class OmdbHttpRequestTest extends TestCase
 
     public function testGetFilm(): void
     {
-        // Create a mock and queue two responses.
 
-        // your json content here doesn't have Response
         $testBody = [
             "Response" => "True",
             "Title" => "title",

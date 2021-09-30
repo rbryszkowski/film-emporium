@@ -10,6 +10,7 @@ use App\Events\FilmAddedEvent;
 use App\Events\FilmDeletedEvent;
 use App\Exceptions\FilmNotFoundException;
 use App\Form\FilmType;
+use App\Service\FilmManager;
 use App\Service\OmdbHttpRequest;
 use GuzzleHttp\Client;
 use PhpParser\Node\Expr\Cast\Object_;
@@ -99,26 +100,21 @@ class FilmsController extends AbstractController
         ]);
     }
 
-    public function addFilmPage(Request $request, EventDispatcherInterface $dispatcher): Response
+    public function addFilmPage(Request $request, FilmManager $filmManager): Response
     {
 
-        $filmModel = new Film();
+        $film = new Film();
 
-        $form = $this->createForm(FilmType::class, $filmModel);
+        $form = $this->createForm(FilmType::class, $film);
 
         if ($request->isMethod('POST')) {
 
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
-                $manager = $this->getDoctrine()->getManager();
-                $manager->persist($filmModel);
-                $manager->flush();
-                //dispatch a film added event
-                $filmAddedEvent = new FilmAddedEvent($filmModel);
-                $dispatcher->dispatch($filmAddedEvent, FilmAddedEvent::NAME);
-
-                return $this->redirectToRoute('filmIndexPage');
+                $filmManager->addFilmToDB($film);
+                $this->addFlash('success', 'the film: ' . $film->getTitle() . ' has been added!');
+                return $this->redirectToRoute('addFilmPage');
             }
 
         }
@@ -129,7 +125,7 @@ class FilmsController extends AbstractController
 
     }
 
-    public function updateFilmPage(int $id, Request $request): Response
+    public function updateFilmPage(int $id, Request $request, FilmManager $filmManager): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
 
@@ -142,10 +138,7 @@ class FilmsController extends AbstractController
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
-                $manager = $this->getDoctrine()->getManager();
-                $manager->persist($film);
-                $manager->flush();
-
+                $filmManager->updateFilmPrePrepared($film);
                 return $this->redirectToRoute('filmIndexPage');
             }
 
@@ -157,23 +150,15 @@ class FilmsController extends AbstractController
 
     }
 
-    public function deleteFilm(int $id, EventDispatcherInterface $dispatcher): Response
+    public function deleteFilm(int $id, FilmManager $filmManager): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
 
-        $film = $entityManager->getRepository(Film::class)->find($id);
-
-        if ($film !== null) {
-            $entityManager->remove($film);
-            $entityManager->flush();
-            $deleteFilmEvent = new FilmDeletedEvent($film);
-            $dispatcher->dispatch($deleteFilmEvent, FilmDeletedEvent::NAME);
-        }
-
+        $filmManager->deleteFilmWithID($id);
         return $this->redirectToRoute('filmIndexPage');
+
     }
 
-    public function deleteAllFilms(EventDispatcherInterface $dispatcher) {
+    public function deleteAllFilms() {
 
         $entityManager = $this->getDoctrine()->getManager();
         $allFilms = $entityManager->getRepository(Film::class);

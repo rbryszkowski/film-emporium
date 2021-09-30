@@ -22,7 +22,8 @@ class FilmSubscriber implements EventSubscriberInterface  {
     {
         return [
             FilmAddedEvent::NAME => 'onFilmAdded',
-            FilmDeletedEvent::NAME => 'onFilmDeleted'
+            FilmDeletedEvent::NAME => 'onFilmDeleted',
+            FilmUpdatedEvent::NAME => 'onFilmUpdated'
         ];
     }
 
@@ -30,15 +31,15 @@ class FilmSubscriber implements EventSubscriberInterface  {
     {
 
         $filmTitle = $event->getFilm()->getTitle();
+        $this->addFilmLog('add', $filmTitle );
 
-        $filmLog = new FilmLog();
-        $filmLog->setFilmTitle($filmTitle);
-        $filmLog->setActiontype('add');
-        $timestamp = new \DateTime('now');
-        $filmLog->setTimestamp($timestamp);
+    }
 
-        $this->entityManager->persist($filmLog);
-        $this->entityManager->flush();
+    public function onFilmUpdated(FilmUpdatedEvent $event) : void
+    {
+
+        $filmTitle = $event->getFilm()->getTitle();
+        $this->addFilmLog('update', $filmTitle);
 
     }
 
@@ -46,13 +47,17 @@ class FilmSubscriber implements EventSubscriberInterface  {
     {
 
         $filmTitle = $event->getFilm()->getTitle();
+        $this->addFilmLog('delete', $filmTitle);
+
+    }
+
+    private function addFilmLog(string $eventAction, string $filmTitle) {
 
         $filmLog = new FilmLog();
         $filmLog->setFilmTitle($filmTitle);
-        $filmLog->setActiontype('delete');
+        $filmLog->setActiontype($eventAction);
         $timestamp = new \DateTime('now');
         $filmLog->setTimestamp($timestamp);
-
         $this->entityManager->persist($filmLog);
         $this->entityManager->flush();
 

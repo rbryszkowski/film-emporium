@@ -6,6 +6,7 @@ use App\Entity\Director;
 use App\Entity\Film;
 use App\Entity\Genre;
 use App\Exceptions\FilmNotFoundException;
+use App\Service\FilmManager;
 use App\Service\OmdbHttpRequest;
 use Doctrine\ORM\Mapping\Entity;
 use GuzzleHttp\Client;
@@ -29,11 +30,14 @@ class AddRandFilms extends Command
      */
     private $omdbReq;
 
-    public function __construct(EntityManagerInterface $em, OmdbHttpRequest $omdbReq)
+    private $filmManager;
+
+    public function __construct(EntityManagerInterface $em, OmdbHttpRequest $omdbReq, FilmManager $filmManager)
     {
-        $this->entityManager = $em;
         parent::__construct();
+        $this->entityManager = $em;
         $this->omdbReq = $omdbReq;
+        $this->filmManager = $filmManager;
     }
 
     protected function configure(): void
@@ -88,8 +92,7 @@ class AddRandFilms extends Command
             }
             $film->setDirector($director);
 
-            $this->entityManager->persist($film);
-            $this->entityManager->flush();
+            $this->filmManager->addFilmToDB($film);
 
         }
 

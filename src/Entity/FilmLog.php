@@ -31,7 +31,7 @@ class FilmLog
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Regex(pattern="/^add$|^delete$/")
+     * @Assert\Regex(pattern="/^add$|^delete$|^update$/")
      */
     private $actiontype;
 

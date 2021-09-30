@@ -14,6 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Film
 {
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue

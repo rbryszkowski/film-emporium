@@ -43,7 +43,7 @@ class DirectorsControllerTest extends WebTestCase
 
         $this->stringContains('the director: ' . $directorName . ' has been added!', $client->getResponse()->getContent());
 
-        $this->stringContains('<p>' . $directorName . '</p>', $client->getResponse()->getContent());
+        $this->stringContains('<p class="director-list-entry">' . $directorName . '</p>', $client->getResponse()->getContent());
 
     }
 
@@ -57,21 +57,11 @@ class DirectorsControllerTest extends WebTestCase
 
         $client->request('POST', '/directors', ['director' => ['name' => $directorName]]);
 
-        //test that add director request goes to correct page
-        $this->assertEquals(302, $client->getResponse()->getStatusCode());
-        self::assertResponseRedirects('/directors');
-
-        //go back to directors page
-        $crawler = $client->request('GET', '/directors');
-
-        //assert that the new director has been added
-        $this->stringContains('the director: ' . $directorName . ' has been added!', $client->getResponse()->getContent());
-        $this->stringContains('<p>' . $directorName . '</p>', $client->getResponse()->getContent());
-
         //obtain last director in list
-        $lastDirector  = $crawler->filter('p')->last();
+        $crawler = $client->request('GET', '/directors');
+        $lastDirector  = $crawler->filter('.director-list-entry')->last();
 
-        //assert that the last genre in the list matches the one we just added
+        //assert that the last director in the list matches the one we just added
         $this->assertEquals($directorName, $lastDirector->text());
 
         //obtain the route of the recently added director delete button
@@ -86,7 +76,7 @@ class DirectorsControllerTest extends WebTestCase
 
         $client->request('GET', '/directors');
 
-        $this->assertStringNotContainsString('<p>' . $directorName . '</p>', $client->getResponse()->getContent());
+        $this->assertStringNotContainsString('<p class="director-list-entry">' . $directorName . '</p>', $client->getResponse()->getContent());
 
     }
 
@@ -109,14 +99,14 @@ class DirectorsControllerTest extends WebTestCase
         //test the delete all function
         $client->request('DELETE', '/directors/clear');
 
-
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
 
         $client->request('GET', '/directors');
 
         foreach($directorNames as $directorName) {
-            $this->assertStringNotContainsString('<p>' . $directorName . '</p>', $client->getResponse()->getContent());
+            $this->assertStringNotContainsString('<p class="director-list-entry">' . $directorName . '</p>', $client->getResponse()->getContent());
         }
+
     }
 
     public function testDeleteDirectorSetsDirectorToNullOnAssociatedFilmEntity() {
