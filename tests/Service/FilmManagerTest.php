@@ -4,6 +4,7 @@ namespace App\Tests\Service;
 
 use App\Entity\Director;
 use App\Entity\Film;
+use App\Entity\FilmLog;
 use App\Entity\Genre;
 use App\Service\FilmManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -95,6 +96,39 @@ class FilmManagerTest extends WebTestCase
 
     }
 
+    public function testAddFilmToDBCreatesCorrectFilmLog() {
+
+        //load entity manager and event dispatcher services to be used as arguments in FilmManager
+        $kernel = static::bootKernel();
+        $container = $kernel->getContainer();
+        $entityManager = self::$container->get(EntityManagerInterface::class);
+        $eventDispatcher = self::$container->get(EventDispatcherInterface::class);
+
+        //create film to add to DB
+        $title = $this->RandomString(20);
+        $director = new Director();
+        $director->setName($this->RandomString(20));
+        $genres = [];
+        for($i=1;$i<=3;$i++) {
+            $genre = new Genre();
+            $genre->setName($this->RandomString(10));
+            $genres[] = $genre;
+        }
+        $film = new Film();
+        $film->setTitle($title);
+        $film->setDirector($director);
+        $film->setGenres($genres);
+
+        //test addFilmToDB
+        $filmManager = new FilmManager($entityManager, $eventDispatcher);
+        $filmManager->addFilmToDB($film);
+
+        $filmLogSearch = $entityManager->getRepository(FilmLog::class)->findOneBy(['filmTitle' => $title]);
+
+        $this->assertEquals($title, $filmLogSearch->getFilmTitle());
+        $this->assertEquals('add', $filmLogSearch->getActiontype());
+
+    }
 
     //helper methods
     public function RandomString(int $length): string
