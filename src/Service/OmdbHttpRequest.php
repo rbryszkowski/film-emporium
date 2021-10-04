@@ -62,15 +62,15 @@ class OmdbHttpRequest
 
     }
 
-    public function getFilmByImdbId(string $ImdbId)
+    public function getFilmByImdbId(string $imdbID)
     {
 
-        if (!preg_match("/^t{2}\d{7}$/", $ImdbId) ) {
+        if (!preg_match("/^t{2}\d{7}$/", $imdbID) ) {
             throw new \InvalidArgumentException('Argument must be a valid imdb id of type string!');
         }
 
         $params['apikey'] = $this->apikey;
-        $params['i'] = $ImdbId;
+        $params['i'] = $imdbID;
 
         $urlParams = http_build_query($params);
         $response = $this->client->request('GET', $this->url . $urlParams);
