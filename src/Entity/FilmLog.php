@@ -24,42 +24,45 @@ class FilmLog
      */
     private $filmTitle;
 
+
     /**
      * @ORM\Column(type="datetime")
      */
-    private $timestamp;
+    private $date;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\Regex(pattern="/^add$|^delete$|^update$/")
      */
-    private $actiontype;
+    private $actionType;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getTimestamp() : ?\DateTime
+    public function getDate() : ?\DateTime
     {
-        return $this->timestamp;
+        return $this->date;
     }
 
-    public function setTimestamp(\DateTime $timestamp): self
+
+    public function setDate(\DateTime $dateTime): self
     {
-        $this->timestamp = $timestamp;
+
+        $this->date = $dateTime;
 
         return $this;
     }
 
-    public function getActiontype(): ?string
+    public function getActionType(): ?string
     {
-        return $this->actiontype;
+        return $this->actionType;
     }
 
-    public function setActiontype(string $actiontype): self
+    public function setActionType(string $actionType): self
     {
-        $this->actiontype = $actiontype;
+        $this->actionType = $actionType;
 
         return $this;
     }

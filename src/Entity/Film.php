@@ -34,13 +34,13 @@ class Film
     private $imdbID;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Genre", inversedBy="films")
+     * @ORM\ManyToMany(targetEntity="Genre", inversedBy="films", cascade={"persist"})
      */
     private $genres;
 
     /**
      * Many films have one director. This is the owning side.
-     * @ORM\ManyToOne(targetEntity="Director", inversedBy="films")
+     * @ORM\ManyToOne(targetEntity="Director", inversedBy="films", cascade={"persist"})
      */
     private $director;
 

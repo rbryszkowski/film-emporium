@@ -24,12 +24,7 @@ class FilmManager {
 
     public function addFilmToDB(Film $film) : void
     {
-        $director = $film->getDirector();
-        $this->entityManager->persist($director);
-        $genres = $film->getGenres();
-        foreach ($genres as $genre) {
-            $this->entityManager->persist($genre);
-        }
+
         $this->entityManager->persist($film);
         $this->entityManager->flush();
         //log the addition
@@ -55,12 +50,6 @@ class FilmManager {
     public function updateFilmPrePrepared(Film $film) : void
     {
 
-        $director = $film->getDirector();
-        $this->entityManager->persist($director);
-        $genres = $film->getGenres();
-        foreach ($genres as $genre) {
-            $this->entityManager->persist($genre);
-        }
         $this->entityManager->persist($film);
         $this->entityManager->flush();
 

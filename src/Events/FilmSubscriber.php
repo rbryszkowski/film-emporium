@@ -31,7 +31,7 @@ class FilmSubscriber implements EventSubscriberInterface  {
     {
 
         $filmTitle = $event->getFilm()->getTitle();
-        $this->addFilmLog('add', $filmTitle );
+        $this->log('add', $filmTitle );
 
     }
 
@@ -39,7 +39,7 @@ class FilmSubscriber implements EventSubscriberInterface  {
     {
 
         $filmTitle = $event->getFilm()->getTitle();
-        $this->addFilmLog('update', $filmTitle);
+        $this->log('update', $filmTitle);
 
     }
 
@@ -47,17 +47,17 @@ class FilmSubscriber implements EventSubscriberInterface  {
     {
 
         $filmTitle = $event->getFilm()->getTitle();
-        $this->addFilmLog('delete', $filmTitle);
+        $this->log('delete', $filmTitle);
 
     }
 
-    private function addFilmLog(string $eventAction, string $filmTitle) {
+    private function log(string $eventAction, string $filmTitle) : void
+    {
 
         $filmLog = new FilmLog();
         $filmLog->setFilmTitle($filmTitle);
-        $filmLog->setActiontype($eventAction);
-        $timestamp = new \DateTime('now');
-        $filmLog->setTimestamp($timestamp);
+        $filmLog->setActionType($eventAction);
+        $filmLog->setDate(new \DateTime('now'));
         $this->entityManager->persist($filmLog);
         $this->entityManager->flush();
 

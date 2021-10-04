@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Director;
 use App\Entity\FeatureFilm;
 use App\Entity\Film;
+use App\Entity\FilmLog;
 use App\Entity\Genre;
 use App\Events\FilmAddedEvent;
 use App\Events\FilmDeletedEvent;
@@ -168,5 +169,6 @@ class FilmsController extends AbstractController
         return $this->redirectToRoute('filmIndexPage');
 
     }
+
 
 }

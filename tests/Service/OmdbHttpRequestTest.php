@@ -163,23 +163,4 @@ class OmdbHttpRequestTest extends TestCase
 
     }
 
-    public function testOmdbThrowsTypeErrorWhenArgumentNotGiven(): void
-    {
-
-        $this->expectException(\TypeError::class);
-
-        $mockHandler = new MockHandler([
-            new Response(200, [], null),
-        ]);
-
-        $handlerStack = HandlerStack::create($mockHandler);
-
-        $client = new Client(['handler' => $handlerStack]);
-
-        $omdbreq = new OmdbHttpRequest('34e585c5', $client);
-
-        $result = $omdbreq->getFilmByTitle();
-
-    }
-
 }
