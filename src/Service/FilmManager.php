@@ -33,7 +33,7 @@ class FilmManager {
 
     }
 
-    public function createAndAddFilmToDB(string $title, ?Director $director, ?array $genres, string $description = null, string $imdbID = null) : void
+    public function createAndAddFilmToDB(string $title, Director $director, array $genres, string $description = null, string $imdbID = null) : void
     {
 
         $film = new Film();

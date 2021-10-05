@@ -5,7 +5,7 @@ namespace App\Events;
 use App\Entity\Film;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class FilmUpdatedEvent extends Event
+class FilmUpdatedEvent extends Event implements FilmChangeEventInterface
 {
 
     public const NAME = 'film.updated';

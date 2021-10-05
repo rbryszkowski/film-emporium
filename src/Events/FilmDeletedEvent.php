@@ -5,7 +5,7 @@ namespace App\Events;
 use App\Entity\Film;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class FilmDeletedEvent extends Event
+class FilmDeletedEvent extends Event implements FilmChangeEventInterface
 {
 
     public const NAME = 'film.deleted';

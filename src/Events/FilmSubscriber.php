@@ -20,34 +20,26 @@ class FilmSubscriber implements EventSubscriberInterface  {
 
     public static function getSubscribedEvents()
     {
+
         return [
-            FilmAddedEvent::NAME => 'onFilmAdded',
-            FilmDeletedEvent::NAME => 'onFilmDeleted',
-            FilmUpdatedEvent::NAME => 'onFilmUpdated'
+            FilmAddedEvent::NAME => 'handleEvent',
+            FilmDeletedEvent::NAME => 'handleEvent',
+            FilmUpdatedEvent::NAME => 'handleEvent'
         ];
-    }
-
-    public function onFilmAdded(FilmAddedEvent $event) : void
-    {
-
-        $filmTitle = $event->getFilm()->getTitle();
-        $this->log('add', $filmTitle );
 
     }
 
-    public function onFilmUpdated(FilmUpdatedEvent $event) : void
-    {
+    public function handleEvent(FilmChangeEventInterface $event) {
 
         $filmTitle = $event->getFilm()->getTitle();
-        $this->log('update', $filmTitle);
 
-    }
-
-    public function onFilmDeleted(FilmDeletedEvent $event) : void
-    {
-
-        $filmTitle = $event->getFilm()->getTitle();
-        $this->log('delete', $filmTitle);
+        if ($event instanceof FilmAddedEvent) {
+            $this->log('add', $filmTitle );
+        } else if ($event instanceof FilmDeletedEvent ){
+            $this->log('delete', $filmTitle);
+        } else if ($event instanceof FilmUpdatedEvent) {
+            $this->log('update', $filmTitle);
+        }
 
     }
 
