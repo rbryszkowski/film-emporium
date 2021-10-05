@@ -5,13 +5,19 @@ namespace App\Controller;
 use App\Entity\Director;
 use App\Entity\FeatureFilm;
 use App\Entity\Film;
+use App\Entity\FilmLog;
 use App\Entity\Genre;
+use App\Events\FilmAddedEvent;
+use App\Events\FilmDeletedEvent;
 use App\Exceptions\FilmNotFoundException;
 use App\Form\FilmType;
+use App\Service\FilmManager;
 use App\Service\OmdbHttpRequest;
 use GuzzleHttp\Client;
 use PhpParser\Node\Expr\Cast\Object_;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,7 +29,6 @@ class FilmsController extends AbstractController
 
     public function filmIndexPage(Request $request, OmdbHttpRequest $omdbReq): Response
     {
-
 
         $search = $request->get('search', '');
 
@@ -47,8 +52,8 @@ class FilmsController extends AbstractController
 
         foreach($featuredFilms as $featuredFilm) {
             try {
-                if ($featuredFilm->getOmdbID()) {
-                    $featuredFilmsOmdb[] = $omdbReq->getFilmById($featuredFilm->getOmdbID());
+                if ($featuredFilm->getImdbID()) {
+                    $featuredFilmsOmdb[] = $omdbReq->getFilmByImdbId($featuredFilm->getImdbID());
                 } else {
                     $featuredFilmsOmdb[] = $omdbReq->getFilmByTitle($featuredFilm->getTitle());
                 }
@@ -81,8 +86,8 @@ class FilmsController extends AbstractController
         }
 
         try {
-            if ($film->getOmdbID()) {
-                $omdbFilmData = $omdbReq->getFilmById($film->getOmdbID());
+            if ($film->getImdbID()) {
+                $omdbFilmData = $omdbReq->getFilmByImdbId($film->getImdbID());
             } else {
                 $omdbFilmData = $omdbReq->getFilmByTitle($film->getTitle());
             }
@@ -96,22 +101,20 @@ class FilmsController extends AbstractController
         ]);
     }
 
-    public function addFilmPage(Request $request): Response
+    public function addFilmPage(Request $request, FilmManager $filmManager): Response
     {
 
-        $filmModel = new Film();
+        $film = new Film();
 
-        $form = $this->createForm(FilmType::class, $filmModel);
+        $form = $this->createForm(FilmType::class, $film);
 
         if ($request->isMethod('POST')) {
 
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
-                $manager = $this->getDoctrine()->getManager();
-                $manager->persist($filmModel);
-                $manager->flush();
-                $this->addFlash('success', 'the film: ' . $filmModel->getTitle() . ' has been added!');
+                $filmManager->addFilmToDB($film);
+                $this->addFlash('success', 'the film: ' . $film->getTitle() . ' has been added!');
                 return $this->redirectToRoute('addFilmPage');
             }
 
@@ -123,7 +126,7 @@ class FilmsController extends AbstractController
 
     }
 
-    public function updateFilmPage(int $id, Request $request): Response
+    public function updateFilmPage(int $id, Request $request, FilmManager $filmManager): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
 
@@ -136,10 +139,7 @@ class FilmsController extends AbstractController
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
-                $manager = $this->getDoctrine()->getManager();
-                $manager->persist($film);
-                $manager->flush();
-
+                $filmManager->updateFilmPrePrepared($film);
                 return $this->redirectToRoute('filmIndexPage');
             }
 
@@ -151,28 +151,24 @@ class FilmsController extends AbstractController
 
     }
 
-    public function deleteFilm(int $id): Response
+    public function deleteFilm(int $id, FilmManager $filmManager): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
 
-        $film = $entityManager->getRepository(Film::class)->find($id);
-
-        if ($film !== null) {
-            $entityManager->remove($film);
-            $entityManager->flush();
-        }
-
+        $filmManager->deleteFilmWithID($id);
         return $this->redirectToRoute('filmIndexPage');
+
     }
 
     public function deleteAllFilms() {
 
         $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->getRepository(Film::class)->deleteAll();
+        $allFilms = $entityManager->getRepository(Film::class);
+        $allFilms->deleteAll();
         $entityManager->flush();
 
         return $this->redirectToRoute('filmIndexPage');
 
     }
+
 
 }

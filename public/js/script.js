@@ -5,8 +5,8 @@ $(document).ready( () => {
     });
 
     //film actions
-    $('.delete-film').on('click',  () => {
-        let endPoint = '/films/delete/' + $('.delete-film').attr('id');
+    $('.delete-film').on('click',  (e) => {
+        let endPoint = '/films/delete/' + $(e.target).attr('id');
         console.log(endPoint);
         $.ajax({
             url: endPoint,
@@ -29,8 +29,8 @@ $(document).ready( () => {
     });
 
     //genre actions
-    $('.delete-genre').on('click',  () => {
-        let endPoint = '/genres/delete/' + $('.delete-genre').attr('id');
+    $('.delete-genre').on('click',  (e) => {
+        let endPoint = '/genres/delete/' + $(e.target).attr('id');
         $.ajax({
             url: endPoint,
             type: 'DELETE',
@@ -52,12 +52,12 @@ $(document).ready( () => {
     });
 
     //director actions
-    $('.delete-director').on('click',  () => {
-        let endPoint = '/directors/delete/' + $('.delete-director').attr('id');
+    $('.delete-director').on('click',  (e) => {
+        let endPoint = '/directors/delete/' + $(e.target).attr('id');
         $.ajax({
             url: endPoint,
             type: 'DELETE',
-            success: function(response) {
+            success: function(response, textStatus, jqXHR) {
                 location.reload();
             },
             failure: function(error) {

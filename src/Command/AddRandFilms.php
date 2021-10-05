@@ -6,6 +6,7 @@ use App\Entity\Director;
 use App\Entity\Film;
 use App\Entity\Genre;
 use App\Exceptions\FilmNotFoundException;
+use App\Service\FilmManager;
 use App\Service\OmdbHttpRequest;
 use Doctrine\ORM\Mapping\Entity;
 use GuzzleHttp\Client;
@@ -29,11 +30,14 @@ class AddRandFilms extends Command
      */
     private $omdbReq;
 
-    public function __construct(EntityManagerInterface $em, OmdbHttpRequest $omdbReq)
+    private $filmManager;
+
+    public function __construct(EntityManagerInterface $em, OmdbHttpRequest $omdbReq, FilmManager $filmManager)
     {
-        $this->entityManager = $em;
         parent::__construct();
+        $this->entityManager = $em;
         $this->omdbReq = $omdbReq;
+        $this->filmManager = $filmManager;
     }
 
     protected function configure(): void
@@ -52,13 +56,13 @@ class AddRandFilms extends Command
             do {
                 $output->writeln('searching OMDB...');
                 $randOmdbFilm = $this->getRandOmdbFilm();
-            } while( !$randOmdbFilm || $randOmdbFilm->getType() !== 'movie' || $this->entityManager->getRepository(Film::class)->findOneBy(['title' => $randOmdbFilm->getTitle()]) );
+            } while( !$randOmdbFilm || $randOmdbFilm->getType() !== 'movie' || $this->entityManager->getRepository(Film::class)->findOneBy(['imdbID' => $randOmdbFilm->getImdbID()]) );
 
             $output->writeln('found film with title: ' . $randOmdbFilm->getTitle());
 
             $film = new Film();
             $film->setTitle($randOmdbFilm->getTitle());
-            $film->setOmdbID($randOmdbFilm->getImdbID());
+            $film->setImdbID($randOmdbFilm->getImdbID());
             $film->setDescription($randOmdbFilm->getPlot());
 
             if ($randOmdbFilm->getGenre() !== 'N/A') {
@@ -88,8 +92,7 @@ class AddRandFilms extends Command
             }
             $film->setDirector($director);
 
-            $this->entityManager->persist($film);
-            $this->entityManager->flush();
+            $this->filmManager->addFilmToDB($film);
 
         }
 
@@ -112,10 +115,10 @@ class AddRandFilms extends Command
     private function getRandOmdbFilm() {
 
 //        IMDB id is a 7 digit number prefixed with 'tt' (between 0 and 2155529)
-        $randOmdbId = 'tt' . str_pad('' . random_int(0, 2155529), 7, '0', STR_PAD_LEFT);
+        $randImdbId = 'tt' . str_pad('' . random_int(0, 2155529), 7, '0', STR_PAD_LEFT);
 
         try {
-            $result = $this->omdbReq->getFilmById($randOmdbId);
+            $result = $this->omdbReq->getFilmByImdbId($randImdbId);
         } catch(FilmNotFoundException $e) {
             $result = null;
         }

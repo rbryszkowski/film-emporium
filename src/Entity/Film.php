@@ -14,6 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Film
 {
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -30,16 +31,16 @@ class Film
     /**
      * @ORM\Column(type="string", length=9, unique=true, nullable=true)
      */
-    private $omdbID;
+    private $imdbID;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Genre", inversedBy="films")
+     * @ORM\ManyToMany(targetEntity="Genre", inversedBy="films", cascade={"persist"})
      */
     private $genres;
 
     /**
      * Many films have one director. This is the owning side.
-     * @ORM\ManyToOne(targetEntity="Director", inversedBy="films")
+     * @ORM\ManyToOne(targetEntity="Director", inversedBy="films", cascade={"persist"})
      */
     private $director;
 
@@ -120,17 +121,17 @@ class Film
     /**
      * @return mixed
      */
-    public function getOmdbID()
+    public function getImdbID()
     {
-        return $this->omdbID;
+        return $this->imdbID;
     }
 
     /**
-     * @param mixed $omdbID
+     * @param mixed $imdbID
      */
-    public function setOmdbID($omdbID): void
+    public function setImdbID($imdbID): void
     {
-        $this->omdbID = $omdbID;
+        $this->imdbID = $imdbID;
     }
 
 

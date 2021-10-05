@@ -4,6 +4,8 @@
 
     <div class="container">
 
+        <div id="ajax-response"></div>
+
         {% for flashMessage in app.session.flashbag.get('success') %}
 
             <div class="alert alert-success">
@@ -33,7 +35,6 @@
 
         <h3>Directors:</h3>
 
-{#        <a href="{{ path('deleteAllDirectors') }}">Delete All Directors</a>#}
         <button class="btn btn-primary delete-all-directors">Delete All Directors</button>
 
         <hr/>
@@ -43,10 +44,9 @@
                 {% if director.name != 'N/A' %}
                     <div class="row">
                         <div class="col-9">
-                            <p>{{ director.name }}</p>
+                            <p class="director-list-entry">{{ director.name }}</p>
                         </div>
                         <div class="col-3">
-{#                            <a class="btn btn-primary" type="submit" href="/directors/delete/{{ director.id }}">Delete</a>#}
                             <button class="btn btn-primary delete-director" id="{{ director.id }}">Delete</button>
                         </div>
                     </div>

@@ -47,9 +47,7 @@ class OmdbHttpRequestTest extends TestCase
 
     public function testGetFilm(): void
     {
-        // Create a mock and queue two responses.
 
-        // your json content here doesn't have Response
         $testBody = [
             "Response" => "True",
             "Title" => "title",
@@ -162,72 +160,6 @@ class OmdbHttpRequestTest extends TestCase
         $omdbreq = new OmdbHttpRequest('34e585c5', $client);
 
         $result = $omdbreq->getFilmByTitle('               ');
-
-    }
-
-    public function testOmdbThrowsTypeErrorWhenArgumentNotGiven(): void
-    {
-
-        $this->expectException(\TypeError::class);
-
-        $mockHandler = new MockHandler([
-            new Response(200, [], null),
-        ]);
-
-        $handlerStack = HandlerStack::create($mockHandler);
-
-        $client = new Client(['handler' => $handlerStack]);
-
-        $omdbreq = new OmdbHttpRequest('34e585c5', $client);
-
-        $result = $omdbreq->getFilmByTitle();
-
-    }
-
-    public function testGetFilmByIdInvalidArgumentExceptionWhenNotGivenIdWithSevenDigitsAndStartingWithtt(): void
-    {
-
-        $testIds = ['0tt000000', '0000000', 'aa0000000', '000000000', 'tttt0000000', 'tt000000000000', 'tttt000', 't0000000', 't0', '0000000tt'];
-
-        foreach ($testIds as $id){
-
-            $this->expectException(\InvalidArgumentException::class);
-
-            $mockHandler = new MockHandler([
-                new Response(200, [], null)
-            ]);
-
-            $handlerStack = HandlerStack::create($mockHandler);
-
-            $client = new Client(['handler' => $handlerStack]);
-
-            $omdbreq = new OmdbHttpRequest('34e585c5', $client);
-
-            $result = $omdbreq->getFilmById($id);
-
-        }
-
-    }
-
-    public function testGetFilmByIdReturnsFilmResponseWhenGivenValidIdAnd200Response(): void
-    {
-
-        $mockHandler = new MockHandler([
-            new Response(200, [], null)
-        ]);
-
-        $handlerStack = HandlerStack::create($mockHandler);
-
-        $client = new Client(['handler' => $handlerStack]);
-
-        $omdbreq = new OmdbHttpRequest('34e585c5', $client);
-
-        $result = $omdbreq->getFilmById('tt0000000');
-
-
-        $isFilmResponse = is_a($result, FilmResponse::class);
-
-        $this->assertEquals(true, $isFilmResponse);
 
     }
 
