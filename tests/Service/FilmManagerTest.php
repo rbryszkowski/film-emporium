@@ -25,7 +25,6 @@ class FilmManagerTest extends WebTestCase
         $container = $kernel->getContainer();
         $this->entityManager = self::$container->get(EntityManagerInterface::class);
         $this->eventDispatcher = self::$container->get(EventDispatcherInterface::class);
-
     }
 
     //add film method tests
