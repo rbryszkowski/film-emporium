@@ -15,15 +15,22 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class FilmManagerTest extends WebTestCase
 {
 
+    protected $entityManager;
+    protected $eventDispatcher;
+
+    public function setUp() : void
+    {
+        //load entity manager and event dispatcher services at the start of each test
+        $kernel = static::bootKernel();
+        $container = $kernel->getContainer();
+        $this->entityManager = self::$container->get(EntityManagerInterface::class);
+        $this->eventDispatcher = self::$container->get(EventDispatcherInterface::class);
+
+    }
+
     //add film method tests
     public function testAddFilmToDBCorrectlyAddsAFilmToDB()
     {
-
-        //load entity manager and event dispatcher services to be used as arguments in FilmManager
-        $kernel = static::bootKernel();
-        $container = $kernel->getContainer();
-        $entityManager = self::$container->get(EntityManagerInterface::class);
-        $eventDispatcher = self::$container->get(EventDispatcherInterface::class);
 
         //create properties to be used as expected values
         $title = $this->RandomString(20);
@@ -42,10 +49,10 @@ class FilmManagerTest extends WebTestCase
         $film->setGenres($genres);
 
         //test addFilmToDB
-        $filmManager = new FilmManager($entityManager, $eventDispatcher);
+        $filmManager = new FilmManager($this->entityManager, $this->eventDispatcher);
         $filmManager->addFilmToDB($film);
 
-        $filmSearch = $entityManager->getRepository(Film::class)->findOneBy([
+        $filmSearch = $this->entityManager->getRepository(Film::class)->findOneBy([
             'title' => $title
         ]);
 
@@ -61,12 +68,6 @@ class FilmManagerTest extends WebTestCase
 
     public function testGenreIsAddedWhenAddingFilmWithNewGenre() {
 
-        //load entity manager and event dispatcher services to be used as arguments in FilmManager
-        $kernel = static::bootKernel();
-        $container = $kernel->getContainer();
-        $entityManager = self::$container->get(EntityManagerInterface::class);
-        $eventDispatcher = self::$container->get(EventDispatcherInterface::class);
-
         //create properties to be used as expected values
         $title = $this->RandomString(20);
         $director = new Director();
@@ -81,10 +82,10 @@ class FilmManagerTest extends WebTestCase
         $film->setGenres([$genre]);
 
         //test genre is added
-        $filmManager = new FilmManager($entityManager, $eventDispatcher);
+        $filmManager = new FilmManager($this->entityManager, $this->eventDispatcher);
         $filmManager->addFilmToDB($film);
 
-        $genreSearch = $entityManager->getRepository(Genre::class)->findOneBy([
+        $genreSearch = $this->entityManager->getRepository(Genre::class)->findOneBy([
             'name' => $genreName
         ]);
 
@@ -93,12 +94,6 @@ class FilmManagerTest extends WebTestCase
     }
 
     public function testDirectorIsAddedWhenAddingFilmWithNewDirector() {
-
-        //load entity manager and event dispatcher services to be used as arguments in FilmManager
-        $kernel = static::bootKernel();
-        $container = $kernel->getContainer();
-        $entityManager = self::$container->get(EntityManagerInterface::class);
-        $eventDispatcher = self::$container->get(EventDispatcherInterface::class);
 
         //create properties to be used as expected values
         $title = $this->RandomString(20);
@@ -115,10 +110,10 @@ class FilmManagerTest extends WebTestCase
         $film->setGenres([$genre]);
 
         //test director is added
-        $filmManager = new FilmManager($entityManager, $eventDispatcher);
+        $filmManager = new FilmManager($this->entityManager, $this->eventDispatcher);
         $filmManager->addFilmToDB($film);
 
-        $directorSearch = $entityManager->getRepository(Director::class)->findOneBy([
+        $directorSearch = $this->entityManager->getRepository(Director::class)->findOneBy([
             'name' => $directorName
         ]);
 
@@ -128,11 +123,6 @@ class FilmManagerTest extends WebTestCase
 
     public function testCreateAndAddFilmToDBCorrectlyCreatesAndAddsAFilmToDB()
     {
-        //load entity manager and event dispatcher services to be used as arguments in FilmManager
-        $kernel = static::bootKernel();
-        $container = $kernel->getContainer();
-        $entityManager = self::$container->get(EntityManagerInterface::class);
-        $eventDispatcher = self::$container->get(EventDispatcherInterface::class);
 
         //create properties to be used as arguments and expected values
         $title = $this->RandomString(20);
@@ -146,10 +136,10 @@ class FilmManagerTest extends WebTestCase
         }
 
         //test createAndAddFilmToDB
-        $filmManager = new FilmManager($entityManager, $eventDispatcher);
+        $filmManager = new FilmManager($this->entityManager, $this->eventDispatcher);
         $filmManager->createAndAddFilmToDB($title, $director, $genres);
 
-        $filmSearch = $entityManager->getRepository(Film::class)->findOneBy([
+        $filmSearch = $this->entityManager->getRepository(Film::class)->findOneBy([
             'title' => $title
         ]);
 
@@ -164,12 +154,6 @@ class FilmManagerTest extends WebTestCase
     }
 
     public function testAddFilmToDBCreatesCorrectFilmLog() {
-
-        //load entity manager and event dispatcher services to be used as arguments in FilmManager
-        $kernel = static::bootKernel();
-        $container = $kernel->getContainer();
-        $entityManager = self::$container->get(EntityManagerInterface::class);
-        $eventDispatcher = self::$container->get(EventDispatcherInterface::class);
 
         //create film to add to DB
         $title = $this->RandomString(20);
@@ -187,10 +171,10 @@ class FilmManagerTest extends WebTestCase
         $film->setGenres($genres);
 
         //test addFilmToDB
-        $filmManager = new FilmManager($entityManager, $eventDispatcher);
+        $filmManager = new FilmManager($this->entityManager, $this->eventDispatcher);
         $filmManager->addFilmToDB($film);
 
-        $filmLogSearch = $entityManager->getRepository(FilmLog::class)->findOneBy(['filmTitle' => $title]);
+        $filmLogSearch = $this->entityManager->getRepository(FilmLog::class)->findOneBy(['filmTitle' => $title]);
 
         $this->assertEquals($title, $filmLogSearch->getFilmTitle());
         $this->assertEquals('add', $filmLogSearch->getActiontype());
@@ -198,7 +182,7 @@ class FilmManagerTest extends WebTestCase
     }
 
     //helper methods
-    public function RandomString(int $length): string
+    private function RandomString(int $length): string
     {
         $characters = 'abcdefghijklmnopqrstuvwxyz';
         $randstring = '';
